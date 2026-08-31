@@ -5,11 +5,13 @@ import {
     RouterProvider
 } from "react-router-dom";
 import Home from "../pages/Home";
+import CreateBill from "../pages/CreateBill";
 
 
 const router = createBrowserRouter([
     // { path: "/Register",Component:Register }
     { path: "/", element:<Home /> },
+    { path: "/create-bill", element:<CreateBill />},
     { path: "*", element: <Navigate to="/" replace /> }
 
 ])
