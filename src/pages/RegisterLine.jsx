@@ -1,15 +1,19 @@
 import { useState } from "react";
+import { registerLineUser } from "../services/auth.service";
 
 function RegisterLine() {
     const [formData, setFormData] = useState({
         displayName: "",
         email: "",
         birthDay: "",
-        prompay: "",
+        promtpay: "",
         qrPayment: null
     });
 
     const [previewQR, setPreviewQR] = useState(null);
+
+    const params = new URLSearchParams(window.location.search);
+    const registerToken = params.get("token");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,18 +29,44 @@ function RegisterLine() {
 
         if (!file) return;
 
-        setFormData((prev) => ({
-            ...prev,
-            qrPayment: file
-        }));
+        setFormData((prev) => ({ ...prev, qrPayment: file }));
 
         const imageURL = URL.createObjectURL(file);
         setPreviewQR(imageURL);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Register Data:", formData);
+
+        if (!formData.promtpay && !formData.qrPayment) {
+            alert("Please provide at least one paynemt method.")
+            return;
+        }
+
+        try {
+            const data = new FormData();
+
+            data.append("registerToken", registerToken);
+            data.append("email", formData.email);
+            data.append("birthDay", formData.birthDay);
+
+            if (formData.promtpay) { data.append("promtpay", formData.promtpay) };
+            if (formData.qrPayment) { data.append("qrPayment", formData.qrPayment) };
+
+            const result = await registerLineUser(data);
+            console.log("Register Success:", result)
+
+            window.location.href = `/home?token=${result.token}`;
+
+        } catch (error) {
+            console.error("Register Error:", error)
+
+            alert(
+                error.respone?.data?.message || "Registration failed"
+            )
+        }
+
     }
 
     return (
@@ -61,7 +91,7 @@ function RegisterLine() {
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="form-control mb-4">
+                        {/* <div className="form-control mb-4">
                             <label className="label">
                                 <span className="label-text font-semibold">Diaplay Name</span>
                             </label>
@@ -75,7 +105,7 @@ function RegisterLine() {
                                 className="input input-bordered w-full"
                                 required
                             />
-                        </div>
+                        </div> */}
 
                         <div className="form-control mb-4">
                             <label className="label">
@@ -107,24 +137,25 @@ function RegisterLine() {
                             required
                         />
 
-                        <div className="diviser">
+                        <div className="divider">
                             Payment Information
                         </div>
+                        <p>Please Provide at least one payment method.</p>
 
-                        <div className="form-control mb-4">
+                        {/* <div className="form-control mb-4">
                             <label className="label">
-                                <span className="label-text font-semibold">Please Provide at least one payment method.</span>
+                                <span className="label-text font-semibold">PromtPay</span>
                                 <span className="label-text-alt">Optional</span>
                             </label>
                             <input
                                 type="text"
-                                name="prompay"
-                                value={formData.prompay}
+                                name="promtpay"
+                                value={formData.promtpay}
                                 onChange={handleChange}
-                                placeholder="phone number or ID"
+                                placeholder="Your Promtpay"
                                 className="input input-bordered w-full"
                             />
-                        </div>
+                        </div> */}
 
                         <div className="form-control mb-6">
                             <label className="label">
@@ -133,10 +164,12 @@ function RegisterLine() {
                                 <span className="label-text-alt">Optional</span>
                             </label>
                             <input
-                                type="file"
-                                accept="image/*"
+                                type="text"
+                                name="promtpay"
+                                value={formData.promtpay}
                                 onChange={handleChange}
-                                className="file-input file-input-bordered w-full"
+                                placeholder="Your Promtpay"
+                                className="input input-bordered w-full"
                             />
                         </div>
 
@@ -146,23 +179,23 @@ function RegisterLine() {
 
                                 <span className="label-text-alt">Optional</span>
                             </label>
-                            <input 
-                            type="file"
-                            accept="image/*"
-                            onChange={handleChange}
-                            className="file-input file-bordered w-full"
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleQRChange}
+                                className="file-input file-bordered w-full"
                             />
                         </div>
 
                         {previewQR && (
                             <div className="flex flex-col items-center mb-6">
-                                <p className="font-semibold">QR Preview</p>
+                                <p className="font-semibold mb-2">QR Preview</p>
 
                                 <div className="border rounded-xl p-2">
-                                    <img 
-                                    src={previewQR}
-                                    alt="QR Payment Preview"
-                                    className="w-48 h-48 object-contain"
+                                    <img
+                                        src={previewQR}
+                                        alt="QR Payment Preview"
+                                        className="w-48 h-48 object-contain"
                                     />
                                 </div>
                             </div>

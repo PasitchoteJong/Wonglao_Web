@@ -14,7 +14,7 @@ import CreateBill from "../pages/CreateBill";
 const router = createBrowserRouter([
     // { path: "/Register",Component:Register }
     { path: "/loginline", element: <LoginLine /> },
-    { path: "/register", element: <RegisterLine /> },
+    { path: "/register-line", element: <RegisterLine /> },
     { path: "/create-bill", element: <CreateBill /> },
     { path: "/", element: <Home /> },
     { path: "*", element: <Navigate to="/" replace /> }
