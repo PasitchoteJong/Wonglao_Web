@@ -1,21 +1,40 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-// import axios from "axios"; // Remember to install axios and cors when ready to use ***
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function VerifyBill() {
-
     const navigate = useNavigate();
+    const { billId } = useParams(); // รับ billId จาก URL
 
     const [formData, setFormData] = useState({
-        shopName: "Mala Shabu", // Mock data parsed from receipt (OCR)
-        billDate: "2026-09-02",
-        totalAmount: "850",
+        shopName: "",
+        billDate: "",
+        totalAmount: "",
     });
+    const [previewReceipt, setPreviewReceipt] = useState("");
 
-    // Mock receipt image passed from the previous step
-    const [previewReceipt] = useState("https://placehold.co/300x400/D97757/FFF?text=Receipt+Image");
+    useEffect(() => {
+        // ดึงข้อมูลบิลจากหลังบ้านมาแสดง
+        const fetchBill = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/bills/${billId}`);
+                const bill = response.data.bill;
+                setFormData({
+                    shopName: bill.ShopName || "",
+                    billDate: bill.CreatedAt ? bill.CreatedAt.split("T")[0] : "",
+                    totalAmount: bill.TotalAmount || "", 
+                });
+                setPreviewReceipt(`http://localhost:8000${bill.ReceiptImage}`);
+            } catch (error) {
+                console.error("Failed to fetch bill details:", error);
+            }
+        };
 
-    // Universal handleChange function following your team's pattern
+        if (billId) {
+            fetchBill();
+        }
+    }, [billId]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -27,27 +46,16 @@ export default function VerifyBill() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        console.log("Verified Data to Send:", formData);
-        alert(`Bill "${formData.shopName}" verified successfully!`);
-
-        /* === Uncomment this block when ready to connect backend ===
         try {
-            const response = await axios.post("http://localhost:8808/api/bills/verify", formData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
+            await axios.put(`http://localhost:8000/api/bills/${billId}/verify`, formData, {
+                headers: { "Content-Type": "application/json" },
             });
-
-            console.log("Data verified and sent successfully:", response.data);
-            alert("Proceeding to item selection!");
-            
+            alert("Bill verified successfully!");
+            navigate("/food-splitting");
         } catch (error) {
-            console.error("Failed to send data:", error);
+            console.error("Failed to verify bill:", error);
             alert("An error occurred while connecting to the backend server.");
         }
-        ======================================================== */
-
-        navigate("/food-splitting");
     };
 
     return (

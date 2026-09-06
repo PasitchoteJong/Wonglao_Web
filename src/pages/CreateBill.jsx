@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import axios from "axios"; // Remember to install axios and cors when ready to use ***
+import axios from "axios";
 
 export default function CreateBill() {
   const navigate = useNavigate();
@@ -29,29 +29,30 @@ export default function CreateBill() {
       dataToSend.append("receiptFile", formData.receiptFile);
     }
 
-    /* === Uncomment this block when ready to connect backend ===
     try {
-      const response = await axios.post("http://localhost:8808/api/bills", dataToSend, {
+      // ยิงข้อมูลไปที่หลังบ้าน (เช็กพอร์ตให้ตรงกับเครื่องของคุณ เช่น 8000)
+      const response = await axios.post("http://localhost:8000/api/bills", dataToSend, {
         headers: {
           "Content-Type": "multipart/form-data", 
         },
       });
 
       console.log("Data sent successfully:", response.data);
-      alert(`Bill "${formData.billName}" created successfully!`);
       
-      // เมื่อยิงหลังบ้านสำเร็จ ให้วิ่งไปหน้า Verify ต่อ
-      navigate("/verify-bill");
+      // ดึง billId ที่ได้จากหลังบ้าน (รองรับทั้งฟิลด์ Id ตัวใหญ่หรือเล็ก)
+      const billId = response.data.bill?.Id || response.data.bill?.id;
+
+      if (billId) {
+        // พาข้ามไปหน้า Verify พร้อมส่ง billId ไปด้วย
+        navigate(`/verify-bill/${billId}`);
+      } else {
+        alert("Bill created, but missing bill ID to proceed.");
+      }
       
     } catch (error) {
       console.error("Failed to send data:", error);
       alert("An error occurred while connecting to the backend server.");
     }
-    ======================================================== */
-
-    // Temporary alert and redirect for UI testing
-    alert(`Bill "${formData.billName}" created successfully!`);
-    navigate("/verify-bill"); 
   };
 
   return (
@@ -103,6 +104,7 @@ export default function CreateBill() {
                 className="file-input file-input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-600" 
                 accept="image/*" 
                 onChange={handleChange} 
+                required
               />
             </div>
 

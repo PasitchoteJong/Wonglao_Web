@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     { path: "/loginline", element: <LoginLine /> },
     { path: "/register", element: <RegisterLine /> },
     { path: "/create-bill", element: <CreateBill /> },
-    { path: "/verify-bill", element: <VerifyBill /> },
+    { path: "/verify-bill/:billId", element: <VerifyBill /> },
     { path: "/food-splitting", element: <FoodSplitting /> },
     { path: "/r-roulette", element: <RussianRoulette /> },
     { path: "/", element: <Home /> },
