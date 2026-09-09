@@ -12,6 +12,7 @@ import CreateBill from "../pages/CreateBill";
 import VerifyBill from "../pages/VerifyBill.jsx";
 import FoodSplitting from "../pages/FoodSplitting.jsx";
 import RussianRoulette from "../pages/RRoulette.jsx";
+import BillSummary from "../pages/BillSummary.jsx";
 
 
 const router = createBrowserRouter([
@@ -20,7 +21,8 @@ const router = createBrowserRouter([
     { path: "/register-line", element: <RegisterLine /> },
     { path: "/create-bill", element: <CreateBill /> },
     { path: "/verify-bill/:billId", element: <VerifyBill /> },
-    { path: "/food-splitting", element: <FoodSplitting /> },
+    { path: "/food-splitting/:billId", element: <FoodSplitting /> },
+    { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
     { path: "/r-roulette", element: <RussianRoulette /> },
     { path: "/", element: <Home /> },
     { path: "*", element: <Navigate to="/" replace /> }
