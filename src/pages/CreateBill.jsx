@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import { createBill } from "../services/bill.service";
 
 export default function CreateBill() {
   const navigate = useNavigate();
@@ -31,11 +32,12 @@ export default function CreateBill() {
 
     try {
       // ยิงข้อมูลไปที่หลังบ้าน (เช็กพอร์ตให้ตรงกับเครื่องของคุณ เช่น 8000)
-      const response = await axios.post("http://localhost:8000/api/bills", dataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data", 
-        },
-      });
+      const respone = await createBill(dataToSend);
+      // const response = await axios.post("http://localhost:8808/api/bills", dataToSend, {
+      //   headers: {
+      //     "Content-Type": "multipart/form-data", 
+      //   },
+      // });
 
       console.log("Data sent successfully:", response.data);
       

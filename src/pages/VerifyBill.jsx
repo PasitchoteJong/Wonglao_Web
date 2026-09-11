@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { getBillById, updateBillItems, verifyBill } from "../services/bill.service";
 
 export default function VerifyBill() {
     const navigate = useNavigate();
@@ -21,18 +21,20 @@ export default function VerifyBill() {
         // Fetch bill details from backend including items
         const fetchBill = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/bills/${billId}`);
-                const bill = response.data.bill;
-                
+                const response = await getBillById(billId);
+                const bill = response.bill;
+                // const response = await axios.get(`http://localhost:8000/api/bills/${billId}`);
+                // const bill = response.data.bill;
+
                 setFormData({
                     shopName: bill.ShopName || "",
                     billDate: bill.CreatedAt ? bill.CreatedAt.split("T")[0] : "",
-                    totalAmount: bill.TotalAmount || "", 
+                    totalAmount: bill.TotalAmount || "",
                 });
 
                 // Set items array for editing
                 setItems(bill.BillItem || []);
-                setPreviewReceipt(`http://localhost:8000${bill.ReceiptImage}`);
+                setPreviewReceipt(`http://localhost:8808${bill.ReceiptImage}`);
             } catch (error) {
                 console.error("Failed to fetch bill details:", error);
             }
@@ -73,24 +75,26 @@ export default function VerifyBill() {
     // Handle form submission: update items, verify general details, and navigate to food selection
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             // 1. Update/Replace corrected bill items
-            await axios.put(`http://localhost:8000/api/bills/${billId}/items`, {
-                items: items.map(item => ({
-                    name: item.Name,
-                    price: parseFloat(item.Price) || 0,
-                    quantity: parseInt(item.Quantity) || 1
-                }))
-            });
+            await updateBillItems(billId, items)
+            // await axios.put(`http://localhost:8000/api/bills/${billId}/items`, {
+            //     items: items.map(item => ({
+            //         name: item.Name,
+            //         price: parseFloat(item.Price) || 0,
+            //         quantity: parseInt(item.Quantity) || 1
+            //     }))
+            // });
 
             // 2. Verify general bill details (shop name, total amount)
-            await axios.put(`http://localhost:8000/api/bills/${billId}/verify`, formData, {
-                headers: { "Content-Type": "application/json" },
-            });
+            await verifyBill(billId, formData)
+            // await axios.put(`http://localhost:8000/api/bills/${billId}/verify`, formData, {
+            //     headers: { "Content-Type": "application/json" },
+            // });
 
             alert("Bill verified and items updated successfully!");
-            
+
             // 3. Navigate to food selection page passing the billId
             navigate(`/food-splitting/${billId}`);
         } catch (error) {
@@ -101,11 +105,11 @@ export default function VerifyBill() {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-start p-4 pt-10 font-sans">
-            
+
             {/* Return Button */}
             <div className="w-full max-w-xl mb-10">
-                <Link 
-                    to="/create-bill" 
+                <Link
+                    to="/create-bill"
                     className="text-stone-500 hover:text-stone-800 font-medium flex items-center gap-1 w-fit transition-colors"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -124,7 +128,7 @@ export default function VerifyBill() {
                     {previewReceipt && (
                         <div className="flex flex-col items-center mb-6">
                             <div className="border border-stone-200 rounded-2xl p-2 bg-[#FAFAFA] w-full flex justify-center">
-                                <img 
+                                <img
                                     src={previewReceipt}
                                     alt="Receipt Preview"
                                     className="max-h-45 object-contain rounded-xl"
@@ -134,20 +138,20 @@ export default function VerifyBill() {
                     )}
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                        
+
                         {/* Shop Name Input */}
                         <div className="form-control w-full">
                             <label className="label pb-1">
                                 <span className="label-text font-medium text-stone-700">Bill Name / Restaurant</span>
                             </label>
-                            <input 
-                                type="text" 
-                                name="shopName" 
-                                value={formData.shopName} 
-                                onChange={handleChange} 
-                                placeholder="e.g. Mala Shabu" 
-                                className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] focus:ring-1 focus:ring-[#D97757] transition-colors rounded-xl text-stone-700" 
-                                required 
+                            <input
+                                type="text"
+                                name="shopName"
+                                value={formData.shopName}
+                                onChange={handleChange}
+                                placeholder="e.g. Mala Shabu"
+                                className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] focus:ring-1 focus:ring-[#D97757] transition-colors rounded-xl text-stone-700"
+                                required
                             />
                         </div>
 
@@ -157,13 +161,13 @@ export default function VerifyBill() {
                                 <label className="label pb-1">
                                     <span className="label-text font-medium text-stone-700">Date</span>
                                 </label>
-                                <input 
-                                    type="date" 
-                                    name="billDate" 
-                                    value={formData.billDate} 
-                                    onChange={handleChange} 
-                                    className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-700 text-sm" 
-                                    required 
+                                <input
+                                    type="date"
+                                    name="billDate"
+                                    value={formData.billDate}
+                                    onChange={handleChange}
+                                    className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-700 text-sm"
+                                    required
                                 />
                             </div>
 
@@ -171,52 +175,52 @@ export default function VerifyBill() {
                                 <label className="label pb-1">
                                     <span className="label-text font-medium text-stone-700">Total (THB)</span>
                                 </label>
-                                <input 
-                                    type="number" 
+                                <input
+                                    type="number"
                                     step="any"
-                                    name="totalAmount" 
-                                    value={formData.totalAmount} 
-                                    onChange={handleChange} 
-                                    placeholder="0.00" 
-                                    className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-[#D97757] font-bold" 
-                                    required 
+                                    name="totalAmount"
+                                    value={formData.totalAmount}
+                                    onChange={handleChange}
+                                    placeholder="0.00"
+                                    className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-[#D97757] font-bold"
+                                    required
                                 />
                             </div>
                         </div>
 
                         {/* Editable Bill Items Section (OCR Correction) */}
                         <div className="divider my-2 text-stone-400 text-xs">Edit Scanned Items</div>
-                        
+
                         <div className="flex flex-col gap-3">
                             {items.map((item, index) => (
                                 <div key={item.Id || index} className="flex gap-2 items-center bg-[#FAFAFA] p-3 rounded-2xl border border-stone-200">
-                                    <input 
-                                        type="text" 
-                                        value={item.Name || ""} 
-                                        onChange={(e) => handleItemChange(index, "Name", e.target.value)} 
+                                    <input
+                                        type="text"
+                                        value={item.Name || ""}
+                                        onChange={(e) => handleItemChange(index, "Name", e.target.value)}
                                         placeholder="Item name"
                                         className="input input-sm input-bordered flex-grow bg-white rounded-lg text-stone-700"
                                         required
                                     />
-                                    <input 
-                                        type="number" 
+                                    <input
+                                        type="number"
                                         step="any"
-                                        value={item.Price !== undefined ? item.Price : ""} 
-                                        onChange={(e) => handleItemChange(index, "Price", e.target.value)} 
+                                        value={item.Price !== undefined ? item.Price : ""}
+                                        onChange={(e) => handleItemChange(index, "Price", e.target.value)}
                                         placeholder="Price"
                                         className="input input-sm input-bordered w-20 bg-white rounded-lg text-stone-700"
                                         required
                                     />
-                                    <input 
-                                        type="number" 
-                                        value={item.Quantity || 1} 
-                                        onChange={(e) => handleItemChange(index, "Quantity", e.target.value)} 
+                                    <input
+                                        type="number"
+                                        value={item.Quantity || 1}
+                                        onChange={(e) => handleItemChange(index, "Quantity", e.target.value)}
                                         placeholder="Qty"
                                         className="input input-sm input-bordered w-16 bg-white rounded-lg text-stone-700"
                                         required
                                     />
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={() => handleRemoveItem(index)}
                                         className="text-red-400 hover:text-red-600 font-bold px-2 py-1 text-sm"
                                         title="Remove item"
@@ -226,8 +230,8 @@ export default function VerifyBill() {
                                 </div>
                             ))}
 
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={handleAddItem}
                                 className="btn btn-sm btn-outline border-stone-300 text-stone-600 hover:bg-stone-100 hover:border-stone-400 rounded-xl mt-1"
                             >
@@ -236,17 +240,17 @@ export default function VerifyBill() {
                         </div>
 
                         {/* Submit Button */}
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="btn mt-4 w-full text-lg border-none text-white rounded-xl bg-[#D97757] hover:bg-[#C26344] shadow-md"
                         >
                             Confirm & Select Food 🚀
                         </button>
-                        
+
                     </form>
                 </div>
             </div>
-            
+
         </div>
     );
 }

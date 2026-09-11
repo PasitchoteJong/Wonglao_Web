@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { registerLineUser } from "../services/auth.service";
+import { useAuthStore } from "../stores/authStore";
+import { Navigate } from "react-router-dom";
 
 function RegisterLine() {
     const [formData, setFormData] = useState({
@@ -57,7 +59,13 @@ function RegisterLine() {
             const result = await registerLineUser(data);
             console.log("Register Success:", result)
 
-            window.location.href = `/home?token=${result.token}`;
+            // window.location.href = `/home?token=${result.token}`;
+            const login = useAuthStore((state) => state.login);
+            
+        
+            login(result.token, result.user);
+            Navigate("/");
+
 
         } catch (error) {
             console.error("Register Error:", error)
