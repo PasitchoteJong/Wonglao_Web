@@ -1,56 +1,100 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-// import axios from "axios"; // Uncomment when ready to connect backend
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function FoodSplitting() {
+  const { billId } = useParams(); // Get billId from URL parameters
+  const navigate = useNavigate(); // Hook for programmatic navigation
 
-  const [items, setItems] = useState([
-    { id: 1, name: "Mala Shabu Set", price: 450, selected: false },
-    { id: 2, name: "Sliced Pork Belly", price: 199, selected: false },
-    { id: 3, name: "Fried Tofu Skin", price: 60, selected: false },
-    { id: 4, name: "Green Tea (Refill)", price: 140, selected: false },
-  ]);
+  const [members, setMembers] = useState([]);
+  const [selectedMemberId, setSelectedMemberId] = useState("");
+  const [items, setItems] = useState([]);
+  const [selections, setSelections] = useState({}); // Track eating status: { [itemId]: boolean }
 
-  const [payerName, setPayerName] = useState("");
+  // Fetch bill, members, and food items data from backend
+  useEffect(() => {
+    const fetchFoodSelectionData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/bills/${billId}/selection`);
+        const bill = response.data.bill;
+        
+        setItems(bill.BillItem || []);
+        setMembers(bill.Billmember || []);
 
-  const handleChange = (e) => {
-    setPayerName(e.target.value);
+        // Default select the first member if available
+        if (bill.Billmember && bill.Billmember.length > 0) {
+          const defaultMemberId = bill.Billmember[0].Id;
+          setSelectedMemberId(defaultMemberId);
+          loadMemberSelections(bill.BillItem || [], defaultMemberId);
+        }
+      } catch (error) {
+        console.error("Failed to fetch food selection data:", error);
+      }
+    };
+
+    if (billId) {
+      fetchFoodSelectionData();
+    }
+  }, [billId]);
+
+  // Load particular member's existing food selections into local state
+  const loadMemberSelections = (allItems, memberId) => {
+    const map = {};
+    allItems.forEach(item => {
+      const userSelection = item.BillItemMember?.find(
+        (bim) => bim.BillMemberId === memberId
+      );
+      map[item.Id] = userSelection ? userSelection.Eating : false;
+    });
+    setSelections(map);
   };
 
-  // Toggle item selection
+  // Handle member dropdown change
+  const handleMemberChange = (e) => {
+    const newMemberId = e.target.value;
+    setSelectedMemberId(newMemberId);
+    loadMemberSelections(items, newMemberId);
+  };
+
+  // Toggle item selection state
   const toggleItem = (id) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, selected: !item.selected } : item
-    ));
+    setSelections(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
-  // Calculate total for selected items
+  // Calculate total price for selected items of the current member
   const totalSelected = items
-    .filter(item => item.selected)
-    .reduce((sum, item) => sum + item.price, 0);
+    .filter(item => selections[item.Id])
+    .reduce((sum, item) => sum + parseFloat(item.Price || 0), 0);
 
+  // Handle form submission to save selections to backend and navigate to summary
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const splitData = {
-      payerName,
-      selectedItems: items.filter(item => item.selected),
-      totalSelected
-    };
-
-    console.log("Split Data to Send:", splitData);
-    alert(`Successfully recorded items for ${payerName || "Guest"}! Total: ฿${totalSelected}`);
-
-    /* === Uncomment when connecting to backend ===
     try {
-      const response = await axios.post("http://localhost:8808/api/bills/split", splitData, {
+      const formattedSelections = Object.keys(selections).map(itemId => ({
+        billItemId: itemId,
+        eating: selections[itemId]
+      }));
+
+      await axios.put(`http://localhost:8000/api/bills/${billId}/selection`, {
+        billMemberId: selectedMemberId,
+        selections: formattedSelections
+      }, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Saved successfully:", response.data);
+
+      alert("Food selections saved successfully!");
+      
+      // Navigate to bill summary page after saving
+      navigate(`/food-splitting/${billId}/summary`);
+      
     } catch (error) {
-      console.error("Error saving split data:", error);
+      console.error("Error saving food selections:", error);
+      alert("An error occurred while saving selections.");
     }
-    ============================================ */
   };
 
   return (
@@ -59,7 +103,7 @@ export default function FoodSplitting() {
       {/* Return Button */}
       <div className="w-full max-w-md mb-6">
         <Link 
-          to="/verify-bill" 
+          to={`/verify-bill/${billId}`} 
           className="text-stone-500 hover:text-stone-800 font-medium flex items-center gap-1 w-fit transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -71,24 +115,31 @@ export default function FoodSplitting() {
 
       <div className="w-full max-w-md bg-white shadow-sm border border-stone-200 rounded-3xl p-6">
         <h2 className="text-2xl font-bold mb-1 text-stone-800">Split Bill 🍲</h2>
-        <p className="text-stone-500 text-sm mb-6">Select the dishes you ate and enter your name</p>
+        <p className="text-stone-500 text-sm mb-6">Select your name and check the dishes you ate</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5" id="splitForm">
           
-          {/* Your Name Input */}
+          {/* Member Selector Dropdown */}
           <div className="form-control w-full">
             <label className="label pb-1">
-              <span className="label-text font-medium text-stone-700">Your Name</span>
+              <span className="label-text font-medium text-stone-700">Select Member</span>
             </label>
-            <input 
-              type="text" 
-              name="payerName" 
-              value={payerName}
-              onChange={handleChange}
-              placeholder="e.g. Peng" 
-              className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] focus:ring-1 focus:ring-[#D97757] rounded-xl text-stone-700" 
-              required 
-            />
+            <select 
+              value={selectedMemberId} 
+              onChange={handleMemberChange}
+              className="select select-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-700 font-medium"
+              required
+            >
+              {members.length === 0 ? (
+                <option value="">No members available (Please add members in DB)</option>
+              ) : (
+                members.map(member => (
+                  <option key={member.Id} value={member.Id}>
+                    {member.DisplayName || "Unnamed Member"}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
 
           {/* Menu Items Checklist */}
@@ -97,30 +148,37 @@ export default function FoodSplitting() {
               <span className="label-text font-medium text-stone-700">Menu Items</span>
             </label>
 
-            {items.map((item) => (
-              <div 
-                key={item.id}
-                onClick={() => toggleItem(item.id)}
-                className={`cursor-pointer p-4 rounded-2xl border transition-all duration-200 flex justify-between items-center shadow-sm
-                  ${item.selected 
-                    ? 'bg-[#F4F5EB] border-[#939C76] text-stone-800' 
-                    : 'bg-[#FAFAFA] border-stone-200 text-stone-600'}`
-                }
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors
-                    ${item.selected ? 'bg-[#D97757] border-[#D97757]' : 'border-stone-300 bg-white'}`}>
-                    {item.selected && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
+            {items.length === 0 ? (
+              <p className="text-center text-stone-400 py-4 text-sm">No items found in this bill.</p>
+            ) : (
+              items.map((item) => {
+                const isSelected = !!selections[item.Id];
+                return (
+                  <div 
+                    key={item.Id}
+                    onClick={() => toggleItem(item.Id)}
+                    className={`cursor-pointer p-4 rounded-2xl border transition-all duration-200 flex justify-between items-center shadow-sm
+                      ${isSelected 
+                        ? 'bg-[#F4F5EB] border-[#939C76] text-stone-800' 
+                        : 'bg-[#FAFAFA] border-stone-200 text-stone-600'}`
+                    }
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors
+                        ${isSelected ? 'bg-[#D97757] border-[#D97757]' : 'border-stone-300 bg-white'}`}>
+                        {isSelected && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className={`font-medium text-sm ${isSelected ? 'font-bold' : ''}`}>{item.Name}</span>
+                    </div>
+                    <span className="font-semibold text-sm">฿{item.Price}</span>
                   </div>
-                  <span className={`font-medium text-sm ${item.selected ? 'font-bold' : ''}`}>{item.name}</span>
-                </div>
-                <span className="font-semibold text-sm">฿{item.price}</span>
-              </div>
-            ))}
+                );
+              })
+            )}
           </div>
 
         </form>
@@ -136,10 +194,10 @@ export default function FoodSplitting() {
           <button 
             type="submit" 
             form="splitForm"
-            className={`btn border-none text-white rounded-xl px-6 ${totalSelected > 0 && payerName ? 'bg-[#D97757] hover:bg-[#C26344]' : 'bg-stone-300'}`}
-            disabled={totalSelected === 0 || !payerName}
+            className={`btn border-none text-white rounded-xl px-6 ${selectedMemberId && items.length > 0 ? 'bg-[#D97757] hover:bg-[#C26344]' : 'bg-stone-300'}`}
+            disabled={!selectedMemberId || items.length === 0}
           >
-            Confirm Split 🧾
+            Save Selection ✅
           </button>
         </div>
       </div>
