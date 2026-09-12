@@ -14,6 +14,12 @@ export const createBill = async (data) => {
     return response.data;
 };
 
+export async function processBillOCR(billId){
+    const response = await mainApi.post(`/ocr/bill/${billId}`);
+    return response.data;
+}
+
+
 // Get bill detail with items
 export async function getBillById(billId) {
     const response = await mainApi.get(`/bills/${billId}`);
