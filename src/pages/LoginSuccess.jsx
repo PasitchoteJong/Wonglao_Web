@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function LoginSuccess() {
     const navigate = useNavigate();
@@ -16,10 +18,15 @@ export default function LoginSuccess() {
             return;
         }
 
-        login(token);
+        const user = jwtDecode(token);
+        // console.log("Decode User:",user)
+        login(token, user);
+
+        // console.log("token from loginsuccess:",token)
+        // console.log("user from loginsuccess:",user)
 
         navigate("/", { replace: true });
-    }, []);
+    }, [login, navigate, searchParams]);
 
     return <div>Logging in...</div>;
 }
