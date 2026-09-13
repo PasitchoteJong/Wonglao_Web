@@ -18,6 +18,7 @@ import LoginSuccess from "../pages/LoginSuccess.jsx";
 import JoinBill from "../pages/JoinBill.jsx";
 import EqualSplit from "../pages/EqualSplit.jsx";
 import Payment from "../pages/Payment.jsx";
+import PaymentSummary from "../pages/PaymentSummary.jsx";
 
 
 const router = createBrowserRouter([
@@ -36,8 +37,8 @@ const router = createBrowserRouter([
             { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
             { path: "/equal-split/:billId", element: <EqualSplit /> },
             { path: "/r-roulette", element: <RussianRoulette /> },
-            { path: "/payment/:billId", element: <Payment /> }
-
+            { path: "/payment/:billId", element: <Payment /> },
+            { path: "/payment-summary/:billId", element: <PaymentSummary /> }
         ]
     },
 
