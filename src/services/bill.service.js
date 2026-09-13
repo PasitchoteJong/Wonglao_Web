@@ -14,7 +14,7 @@ export const createBill = async (data) => {
     return response.data;
 };
 
-export async function processBillOCR(billId){
+export async function processBillOCR(billId) {
     const response = await mainApi.post(`/ocr/bill/${billId}`);
     return response.data;
 }
@@ -42,10 +42,7 @@ export async function updateBillItems(billId, items) {
 
 // Verify general bill details
 export async function verifyBill(billId, formData) {
-    const response = await mainApi.put(
-        `/bills/${billId}/verify`,
-        formData
-    );
+    const response = await mainApi.put(`/bills/${billId}/verify`, formData);
 
     return response.data;
 }

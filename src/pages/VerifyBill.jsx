@@ -96,7 +96,7 @@ export default function VerifyBill() {
             alert("Bill verified and items updated successfully!");
 
             // 3. Navigate to food selection page passing the billId
-            navigate(`/food-splitting/${billId}`);
+            navigate(`/join-bill/${billId}`);
         } catch (error) {
             console.error("Failed to verify bill:", error);
             alert("An error occurred while connecting to the backend server.");
