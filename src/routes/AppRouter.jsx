@@ -16,6 +16,8 @@ import BillSummary from "../pages/BillSummary.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
 import JoinBill from "../pages/JoinBill.jsx";
+import EqualSplit from "../pages/EqualSplit.jsx";
+import Payment from "../pages/Payment.jsx";
 
 
 const router = createBrowserRouter([
@@ -29,10 +31,12 @@ const router = createBrowserRouter([
         children: [
             { path: "/create-bill", element: <CreateBill /> },
             { path: "/verify-bill/:billId", element: <VerifyBill /> },
-            {path:"/join-bill/:billId",element:<JoinBill/>},
+            { path: "/join-bill/:billId", element: <JoinBill /> },
             { path: "/food-splitting/:billId", element: <FoodSplitting /> },
             { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
-            { path: "/r-roulette", element: <RussianRoulette /> }
+            { path: "/equal-split/:billId", element: <EqualSplit /> },
+            { path: "/r-roulette", element: <RussianRoulette /> },
+            { path: "/payment/:billId", element: <Payment /> }
 
         ]
     },

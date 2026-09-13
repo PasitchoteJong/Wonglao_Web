@@ -48,11 +48,16 @@ export default function JoinBill() {
             setSubmitting(true);
             await selectSplitMethod(billId, method);
 
-            selectSplitMethod(method);
+            // selectSplitMethod(method);
 
             setShowSplitModal(false);
 
-            navigate(`/food-splitting/${billId}`);
+            if (method === "EQUAL") navigate(`/equal-split/${billId}`);
+            else if (method === "PROPORTIONAL") navigate(`/food-splitting/${billId}`);
+            else if (method === "ROULETTE") navigate(`/roulette/${billId}`);
+
+
+
         } catch (error) {
             console.error("Failed to select split method:", error)
 
