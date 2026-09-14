@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-    getPaymentSummary,
-    getPaymentMemberDetail
+    getPaymentMemberDetail,
+    getPaymentSummary_be
 } from "../services/payment.service";
 
 const PaymentSummary = () => {
@@ -27,7 +27,7 @@ const PaymentSummary = () => {
             setLoading(true);
 
             const result =
-                await getPaymentSummary(billId);
+                await getPaymentSummary_be(billId);
 
             setSummary(result.data);
         } catch (error) {

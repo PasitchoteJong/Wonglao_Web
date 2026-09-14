@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
-    getMyPayment
+    getMyPayment,
+    uploadPaymentSlip
 } from "../services/payment.service";
 
 const Payment = () => {
     const { billId } = useParams();
+
+    const navigate = useNavigate();
 
     const [payment, setPayment] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -27,12 +31,10 @@ const Payment = () => {
             await uploadPaymentSlip(billId, formData);
 
             alert("Payment slip uploaded");
+            navigate("/verify-payment");
 
         } catch (error) {
-            console.error(
-                "Upload slip error:",
-                error
-            );
+            console.error("Upload slip error:", error);
         } finally {
             setUploading(false);
         }
