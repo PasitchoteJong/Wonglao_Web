@@ -21,6 +21,7 @@ import Payment from "../pages/Payment.jsx";
 import PaymentSummary from "../pages/PaymentSummary.jsx";
 import SplitMethod from "../pages/SplitMethod.jsx";
 import VerifyPayment from "../pages/VerifyPayment.jsx";
+import FoodSplittingWaiting from "../pages/FoodSplittingWaitting.jsx";
 
 
 const router = createBrowserRouter([
@@ -36,8 +37,9 @@ const router = createBrowserRouter([
             { path: "/verify-bill/:billId", element: <VerifyBill /> },
             { path: "/join-bill/:billId", element: <JoinBill /> },
             { path: "/split-method/:billId", element: <SplitMethod /> },
-            { path: "/food-splitting/:billId", element: <FoodSplitting /> },
+            { path: "/food-splitting/:billId/waiting", element: <FoodSplittingWaiting /> },
             { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
+            { path: "/food-splitting/:billId", element: <FoodSplitting /> },
             { path: "/equal-split/:billId", element: <EqualSplit /> },
             { path: "/r-roulette", element: <RussianRoulette /> },
             { path: "/payment/:billId", element: <Payment /> },
