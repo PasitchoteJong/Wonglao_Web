@@ -1,86 +1,63 @@
-const RoulettePaymentModal = ({
-    open,
-    winner,
-    totalAmount,
-    onContinue
-}) => {
+const RoulettePaymentModal = ({ open, winner, totalAmount, onContinue }) => {
+  if (!open || !winner) return null;
 
-    if (!open || !winner) {
-        return null;
-    }
-
-    return (
-        <dialog
-            className="modal modal-open"
-        >
-
-            <div className="modal-box">
-
-                <h2 className="
+  return (
+    <dialog className="modal modal-open">
+      <div className="modal-box">
+        <h2
+          className="
                     text-2xl
                     font-bold
                     text-center
                     mb-6
-                ">
-                    Roulette Result
-                </h2>
+                "
+        >
+          Roulette Result
+        </h2>
 
-
-                <div className="
+        <div
+          className="
                     text-center
                     space-y-3
-                ">
+                "
+        >
+          <p>ยอดรวมของบิล</p>
 
-                    <p>
-                        ยอดรวมของบิล
-                    </p>
-
-                    <p className="
+          <p
+            className="
                         text-3xl
                         font-bold
-                    ">
-                        ฿
-                        {Number(
-                            totalAmount
-                        ).toLocaleString()}
-                    </p>
+                    "
+          >
+            ฿{Number(totalAmount || 0).toLocaleString()}
+          </p>
 
-                    <p>
-                        ผู้รับผิดชอบการจ่าย
-                    </p>
+          <p>ผู้รับผิดชอบการจ่าย</p>
 
-                    <p className="
+          <p
+            className="
                         text-xl
                         font-bold
                         text-primary
-                    ">
-                        {winner.DisplayName}
-                    </p>
+                    "
+          >
+            {winner.DisplayName}
+          </p>
+        </div>
 
-                </div>
-
-
-                <div className="
+        <div
+          className="
                     modal-action
                     justify-center
-                ">
-
-                    <button
-                        className="
-                            btn
-                            btn-primary
-                        "
-                        onClick={onContinue}
-                    >
-                        ไป Payment
-                    </button>
-
-                </div>
-
-            </div>
-
-        </dialog>
-    );
+                "
+        >
+          <button className="btn btn-primary" onClick={onContinue}>
+            ไป Payment
+          </button>
+        </div>
+      </div>
+    </dialog>
+  );
 };
 
 export default RoulettePaymentModal;

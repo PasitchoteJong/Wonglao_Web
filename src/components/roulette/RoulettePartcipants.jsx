@@ -1,5 +1,5 @@
 const RouletteParticipants = ({
-    members,
+    members = [],
     isOwner,
     onEligibilityChange
 }) => {
@@ -9,6 +9,7 @@ const RouletteParticipants = ({
             (member) =>
                 member.RouletteEligible
         ),
+
         ...members.filter(
             (member) =>
                 !member.RouletteEligible
@@ -43,47 +44,35 @@ const RouletteParticipants = ({
                                         rounded-lg
                                         bg-base-100
                                         transition-all
-                                        ${!eligible
-                                            ? "opacity-40"
-                                            : ""
+                                        ${
+                                            !eligible
+                                                ? "opacity-40"
+                                                : ""
                                         }
                                     `}
                                 >
 
-                                    <div className="flex items-center gap-3">
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-3
+                                    ">
 
-                                        {member.User
-                                            ?.ProfileImage ? (
-                                            <img
-                                                src={
-                                                    member.User.ProfileImage
-                                                }
-                                                alt={
-                                                    member.DisplayName
-                                                }
-                                                className="
-                                                    w-10
-                                                    h-10
-                                                    rounded-full
-                                                "
-                                            />
-                                        ) : (
-                                            <div
-                                                className="
-                                                    w-10
-                                                    h-10
-                                                    rounded-full
-                                                    bg-neutral
-                                                    text-neutral-content
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                "
-                                            >
-                                                {member.DisplayName
-                                                    ?.charAt(0)}
-                                            </div>
-                                        )}
+                                        <div className="
+                                            w-10
+                                            h-10
+                                            rounded-full
+                                            bg-neutral
+                                            text-neutral-content
+                                            flex
+                                            items-center
+                                            justify-center
+                                            font-bold
+                                        ">
+                                            {member.DisplayName
+                                                ?.charAt(0)
+                                                ?.toUpperCase()}
+                                        </div>
 
                                         <span>
                                             {
@@ -93,10 +82,12 @@ const RouletteParticipants = ({
 
                                     </div>
 
-
                                     <input
                                         type="checkbox"
-                                        className="checkbox checkbox-primary"
+                                        className="
+                                            checkbox
+                                            checkbox-primary
+                                        "
                                         checked={
                                             eligible
                                         }
