@@ -12,7 +12,7 @@ export default function ProtectedRoute() {
 
     return (
         <>
-            {/* <UserProfile /> */}
+            <UserProfile />
             <Outlet />
         </>
     );

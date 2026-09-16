@@ -6,7 +6,7 @@ export const getJoinBill = async (billId)=>{
     return response.data;
 }
 
-export const josinBill = async (billId)=>{
+export const joinBill = async (billId)=>{
     const response = await mainApi.post(`jbill/${billId}/join`);
 
     return response.data

@@ -154,9 +154,9 @@ export default function JoinBill() {
 
                                     <div
                                         key={member.Id}
-                                        className="bg-[#FAFAFA] border border-stone-200 rounded-xl px-4 py-3"
+                                        className="bg-[#FAFAFA] border  border-stone-200 rounded-xl px-4 py-3"
                                     >
-                                        <span className="font-medium">
+                                        <span className="font-medium text-black">
                                             {member.DisplayName}
                                         </span>
                                     </div>

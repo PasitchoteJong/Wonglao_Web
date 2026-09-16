@@ -1,4 +1,4 @@
-const RoulettePaymentModal = ({ open, winner, totalAmount, onContinue }) => {
+const RoulettePaymentModal = ({ open, winner, onContinue }) => {
   if (!open || !winner) return null;
 
   return (
@@ -29,7 +29,7 @@ const RoulettePaymentModal = ({ open, winner, totalAmount, onContinue }) => {
                         font-bold
                     "
           >
-            ฿{Number(totalAmount || 0).toLocaleString()}
+            ฿{Number(winner.AmountToPay || 0).toLocaleString()}
           </p>
 
           <p>ผู้รับผิดชอบการจ่าย</p>

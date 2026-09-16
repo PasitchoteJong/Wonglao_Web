@@ -11,7 +11,6 @@ import LoginLine from "../pages/LoginLine.jsx";
 import CreateBill from "../pages/CreateBill";
 import VerifyBill from "../pages/VerifyBill.jsx";
 import FoodSplitting from "../pages/FoodSplitting.jsx";
-import RussianRoulette from "../pages/RRoulette.jsx";
 import BillSummary from "../pages/BillSummary.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
@@ -37,15 +36,11 @@ const router = createBrowserRouter([
       { path: "/verify-bill/:billId", element: <VerifyBill /> },
       { path: "/join-bill/:billId", element: <JoinBill /> },
       { path: "/split-method/:billId", element: <SplitMethod /> },
-      {
-        path: "/food-splitting/:billId/waiting",
-        element: <FoodSplittingWaiting />,
-      },
+      { path: "/food-splitting/:billId/waiting",element: <FoodSplittingWaiting />},
       { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
       { path: "/food-splitting/:billId", element: <FoodSplitting /> },
       { path: "/equal-split/:billId", element: <EqualSplit /> },
       { path: "/roulette/:billId", element: <Roulette /> },
-      { path: "/r-roulette", element: <RussianRoulette /> },
       { path: "/payment/:billId", element: <Payment /> },
       { path: "/verify-payment", element: <VerifyPayment /> },
       { path: "/payment-summary/:billId", element: <PaymentSummary /> },
