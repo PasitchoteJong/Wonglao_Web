@@ -30,7 +30,6 @@ function RegisterLine() {
   };
 
   const handleQRChange = (e) => {
-    
     const file = e.target.files[0];
 
     if (!file) return;
@@ -89,7 +88,7 @@ function RegisterLine() {
           <div className="card-body p-8">
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold text-white">Register</h1>
-
+              <p className="text-white">TEST PRODUCTION LOGIN</p>
               <p className="text-[#A0A0A0] mt-2">Complete your information</p>
             </div>
 
