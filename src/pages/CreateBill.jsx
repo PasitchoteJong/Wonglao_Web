@@ -67,13 +67,13 @@ export default function CreateBill() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-start p-4 pt-10 font-sans">
+return (
+    <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-start p-4 pt-10 font-sans">
 
       <div className="w-full max-w-md mb-14">
         <Link
           to="/"
-          className="text-stone-500 hover:text-stone-800 font-medium flex items-center gap-1 w-fit transition-colors"
+          className="text-[#F8B500] hover:opacity-80 font-medium flex items-center gap-1 w-fit transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -82,23 +82,23 @@ export default function CreateBill() {
         </Link>
       </div>
 
-      <div className="card w-full max-w-md bg-white shadow-sm border border-stone-200 rounded-3xl">
+      <div className="card w-full max-w-md bg-[#1C1C1E] shadow-xl rounded-3xl border-none">
         <div className="card-body p-6">
-          <h2 className="card-title text-2xl font-bold mb-1 text-stone-800">Create New Bill ☕️</h2>
-          <p className="text-stone-500 text-sm mb-6">Upload your receipt photo to start splitting with friends</p>
+          <h2 className="card-title text-2xl font-bold mb-1 text-white">Create New Bill ☕️</h2>
+          <p className="text-[#A0A0A0] text-sm mb-6">Upload your receipt photo to start splitting with friends</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
             {/* Bill Name Input */}
             <div className="form-control w-full">
               <label className="label pb-1">
-                <span className="label-text font-medium text-stone-700">Bill Name / Restaurant</span>
+                <span className="label-text font-medium text-white">Bill Name / Restaurant</span>
               </label>
               <input
                 type="text"
                 name="billName"
                 placeholder="e.g. Mala Shabu, Cafe around the corner"
-                className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] focus:ring-1 focus:ring-[#D97757] transition-colors rounded-xl text-stone-700"
+                className="input input-bordered w-full bg-[#2C2C2E] border-transparent focus:border-[#F8B500] focus:ring-1 focus:ring-[#F8B500] transition-colors rounded-xl text-white placeholder-gray-500"
                 value={formData.billName}
                 onChange={handleChange}
                 required
@@ -108,12 +108,12 @@ export default function CreateBill() {
             {/* Receipt Upload Input */}
             <div className="form-control w-full">
               <label className="label pb-1">
-                <span className="label-text font-medium text-stone-700">Upload Receipt</span>
+                <span className="label-text font-medium text-white">Upload Receipt</span>
               </label>
               <input
                 type="file"
                 name="receiptFile"
-                className="file-input file-input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-600"
+                className="file-input file-input-bordered w-full bg-[#2C2C2E] border-transparent focus:border-[#F8B500] rounded-xl text-white"
                 accept="image/*"
                 onChange={handleChange}
                 required
@@ -123,7 +123,7 @@ export default function CreateBill() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn mt-6 w-full text-lg border-none text-white rounded-xl bg-[#D97757] hover:bg-[#C26344] shadow-md"
+              className="btn mt-6 w-full text-lg border-none text-[#121212] rounded-xl bg-[#F8B500] hover:bg-[#E0A300] shadow-md font-bold"
             >
               Next 🚀
             </button>
@@ -134,4 +134,74 @@ export default function CreateBill() {
 
     </div>
   );
+
+
+  // return (
+
+  //   <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-start p-4 pt-10 font-sans">
+
+  //     <div className="w-full max-w-md mb-14">
+  //       <Link
+  //         to="/"
+  //         className="text-stone-500 hover:text-stone-800 font-medium flex items-center gap-1 w-fit transition-colors"
+  //       >
+  //         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+  //           <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+  //         </svg>
+  //         Return
+  //       </Link>
+  //     </div>
+
+  //     <div className="card w-full max-w-md bg-white shadow-sm border border-stone-200 rounded-3xl">
+  //       <div className="card-body p-6">
+  //         <h2 className="card-title text-2xl font-bold mb-1 text-stone-800">Create New Bill ☕️</h2>
+  //         <p className="text-stone-500 text-sm mb-6">Upload your receipt photo to start splitting with friends</p>
+
+  //         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+  //           {/* Bill Name Input */}
+  //           <div className="form-control w-full">
+  //             <label className="label pb-1">
+  //               <span className="label-text font-medium text-stone-700">Bill Name / Restaurant</span>
+  //             </label>
+  //             <input
+  //               type="text"
+  //               name="billName"
+  //               placeholder="e.g. Mala Shabu, Cafe around the corner"
+  //               className="input input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] focus:ring-1 focus:ring-[#D97757] transition-colors rounded-xl text-stone-700"
+  //               value={formData.billName}
+  //               onChange={handleChange}
+  //               required
+  //             />
+  //           </div>
+
+  //           {/* Receipt Upload Input */}
+  //           <div className="form-control w-full">
+  //             <label className="label pb-1">
+  //               <span className="label-text font-medium text-stone-700">Upload Receipt</span>
+  //             </label>
+  //             <input
+  //               type="file"
+  //               name="receiptFile"
+  //               className="file-input file-input-bordered w-full bg-[#FAFAFA] border-stone-300 focus:border-[#D97757] rounded-xl text-stone-600"
+  //               accept="image/*"
+  //               onChange={handleChange}
+  //               required
+  //             />
+  //           </div>
+
+  //           {/* Submit Button */}
+  //           <button
+  //             type="submit"
+  //             className="btn mt-6 w-full text-lg border-none text-white rounded-xl bg-[#D97757] hover:bg-[#C26344] shadow-md"
+  //           >
+  //             Next 🚀
+  //           </button>
+
+  //         </form>
+  //       </div>
+  //     </div>
+
+  //   </div>
+  // );
 }

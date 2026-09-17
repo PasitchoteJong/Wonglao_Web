@@ -47,58 +47,162 @@ const EqualSplit = () => {
         );
     }
 
-    return (
-        <div className="min-h-screen p-6">
+     return (
+
+        <div className="min-h-screen p-6 bg-[#000000]">
+
+
 
             <div className="max-w-2xl mx-auto">
 
-                <h1 className="text-3xl font-bold mb-2">
+
+
+                <h1 className="text-3xl font-bold mb-2 text-white">
+
                     Equal Split
+
                 </h1>
 
-                <p className="text-base-content/60 mb-6">
+
+
+                <p className="text-[#A0A0A0] mb-6">
+
                     Everyone pays an equal amount
+
                 </p>
+
+
 
                 <div className="space-y-3">
 
+
+
                     {displayedMembers.map((member) => (
+
                         <div
+
                             key={member.Id}
-                            className="flex justify-between items-center p-4 bg-base-200 rounded-xl"
+
+                            className="flex justify-between items-center p-4 bg-[#1C1C1E] rounded-xl"
+
                         >
+
                             <div>
-                                <p className="font-semibold">
+
+                                <p className="font-semibold text-white">
+
                                     {member.DisplayName}
+
                                 </p>
 
-                                <p className="text-sm text-base-content/60">
+
+
+                                <p className="text-sm text-[#A0A0A0]">
+
                                     {member.StatusPay}
+
                                 </p>
+
                             </div>
 
-                            <span className="font-bold text-lg">
+
+
+                            <span className="font-bold text-lg text-[#F8B500]">
+
                                 ฿
+
                                 {Number(
+
                                     member.AmountToPay
+
                                 ).toFixed(2)}
+
                             </span>
+
                         </div>
+
                     ))}
+
+
 
                 </div>
 
+
+
                 <button
+
                     onClick={handleNext}
-                    className="btn btn-primary w-full mt-6"
+
+                    className="btn w-full mt-6 border-none text-[#121212] font-bold bg-[#F8B500] hover:bg-[#E0A300] rounded-xl"
+
                 >
+
                     Go to Payment
+
                 </button>
+
+
 
             </div>
 
+
+
         </div>
+
     );
+
+    // return (
+    //     <div className="min-h-screen p-6">
+
+    //         <div className="max-w-2xl mx-auto">
+
+    //             <h1 className="text-3xl font-bold mb-2">
+    //                 Equal Split
+    //             </h1>
+
+    //             <p className="text-base-content/60 mb-6">
+    //                 Everyone pays an equal amount
+    //             </p>
+
+    //             <div className="space-y-3">
+
+    //                 {displayedMembers.map((member) => (
+    //                     <div
+    //                         key={member.Id}
+    //                         className="flex justify-between items-center p-4 bg-base-200 rounded-xl"
+    //                     >
+    //                         <div>
+    //                             <p className="font-semibold">
+    //                                 {member.DisplayName}
+    //                             </p>
+
+    //                             <p className="text-sm text-base-content/60">
+    //                                 {member.StatusPay}
+    //                             </p>
+    //                         </div>
+
+    //                         <span className="font-bold text-lg">
+    //                             ฿
+    //                             {Number(
+    //                                 member.AmountToPay
+    //                             ).toFixed(2)}
+    //                         </span>
+    //                     </div>
+    //                 ))}
+
+    //             </div>
+
+    //             <button
+    //                 onClick={handleNext}
+    //                 className="btn btn-primary w-full mt-6"
+    //             >
+    //                 Go to Payment
+    //             </button>
+
+    //         </div>
+
+    //     </div>
+    // );
 };
 
 export default EqualSplit;

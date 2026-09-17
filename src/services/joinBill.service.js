@@ -11,3 +11,4 @@ export const joinBill = async (billId)=>{
 
     return response.data
 }
+
