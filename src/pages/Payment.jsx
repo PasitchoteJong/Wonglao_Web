@@ -93,7 +93,7 @@ const Payment = () => {
             {owner.QRpayment && (
               <div className="mt-5 flex justify-center bg-white p-4 rounded-2xl mx-auto w-fit">
                 <img
-                  src={`http://localhost:8808${owner.QRpayment}`}
+                  src={owner.QRpayment}
                   alt="Payment QR"
                   className="w-64 h-64 object-contain rounded-lg"
                 />

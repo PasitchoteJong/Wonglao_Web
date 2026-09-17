@@ -310,7 +310,7 @@ const VerifyPayment = () => {
 
                   <div className="bg-white p-2 rounded-2xl">
                     <img
-                      src={`http://localhost:8808${selectedSlip.slip.ProofImage}`}
+                      src={selectedSlip.slip.ProofImage}
                       alt="Payment slip"
                       className="w-full rounded-xl object-contain max-h-96"
                     />
