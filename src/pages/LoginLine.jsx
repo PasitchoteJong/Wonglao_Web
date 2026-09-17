@@ -4,7 +4,7 @@ const LoginLine = () => {
     // console.log(import.meta.env.VITE_LINE_CHANNEL_ID)
     console.log("Channel ID:", clientId);
 
-    const redirectUri = "http://localhost:8808/api/auth/line/callback";
+    const redirectUri = import.meta.env.VITE_LINE_CHANNEL_URL;
 
     const lineLoginUrl =
       `https://access.line.me/oauth2/v2.1/authorize` +
