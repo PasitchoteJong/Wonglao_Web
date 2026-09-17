@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectSplitMethod } from "../services/split.service";
+import Loading from "../components/Loading.jsx";
 
 export default function SplitMethod() {
   const { billId } = useParams();
   const navigate = useNavigate();
 
   const [submitting, setSubmitting] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const methods = [
     {
       id: "EQUAL",
@@ -31,6 +32,7 @@ export default function SplitMethod() {
 
   const handleSelect = async (method) => {
     try {
+      setLoading(true);
       setSubmitting(true);
 
       await selectSplitMethod(billId, method.id);
@@ -42,38 +44,42 @@ export default function SplitMethod() {
       alert("Failed to select split method");
     } finally {
       setSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen p-8 bg-[#000000]">
-      <h1 className="text-3xl font-bold text-center mb-8 text-white">
-        Select Split Method
-      </h1>
+    <>
+      <div className="min-h-screen p-8 bg-[#000000]">
+        <h1 className="text-3xl font-bold text-center mb-8 text-white">
+          Select Split Method
+        </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {methods.map((method) => (
-          <button
-            key={method.id}
-            disabled={submitting}
-            onClick={() => handleSelect(method)}
-            className="card bg-[#1C1C1E] border border-transparent shadow-xl hover:shadow-[0_8px_30px_rgb(248,181,0,0.15)] hover:-translate-y-1 hover:border-[#F8B500] transition-all text-left"
-          >
-            <div className="card-body">
-              <h2 className="card-title text-white">{method.title}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {methods.map((method) => (
+            <button
+              key={method.id}
+              disabled={submitting}
+              onClick={() => handleSelect(method)}
+              className="card bg-[#1C1C1E] border border-transparent shadow-xl hover:shadow-[0_8px_30px_rgb(248,181,0,0.15)] hover:-translate-y-1 hover:border-[#F8B500] transition-all text-left"
+            >
+              <div className="card-body">
+                <h2 className="card-title text-white">{method.title}</h2>
 
-              <p className="text-[#A0A0A0]">{method.description}</p>
+                <p className="text-[#A0A0A0]">{method.description}</p>
 
-              <div className="card-actions justify-end mt-4">
-                <span className="btn border-none text-[#121212] bg-[#F8B500] hover:bg-[#E0A300] font-bold">
-                  Select
-                </span>
+                <div className="card-actions justify-end mt-4">
+                  <span className="btn border-none text-[#121212] bg-[#F8B500] hover:bg-[#E0A300] font-bold">
+                    Select
+                  </span>
+                </div>
               </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+      {loading && <Loading />}
+    </>
   );
 
   // return (

@@ -61,39 +61,31 @@ const PaymentSummary = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white font-sans p-6">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-white">Payment Summary</h1>
+    <>
+      <div className="min-h-screen bg-[#000000] text-white font-sans p-6">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold text-white">Payment Summary</h1>
 
-        <p className="text-[#F8B500] font-medium mt-1">{summary.ShopName}</p>
+          <p className="text-[#F8B500] font-medium mt-1">{summary.ShopName}</p>
 
-        <div className="mt-6 space-y-4">
-          {summary.Members.map((member) => {
-            const isComplete = member.PaymentAccepted;
+          <div className="mt-6 space-y-4">
+            {summary.Members.map((member) => {
+              const isComplete = member.PaymentAccepted;
 
-            const isShort =
-              member.RemainingAmount > 0 && !member.PaymentAccepted;
+              const isShort =
+                member.RemainingAmount > 0 && !member.PaymentAccepted;
 
-            return (
-              <button
-                key={member.Id}
-                onClick={() => handleOpenMember(member)}
-                className={`
-
-                                    w-full text-left
-
+              return (
+                <button
+                  key={member.Id}
+                  onClick={() => handleOpenMember(member)}
+                  className={`w-full text-left
                                     card bg-[#1C1C1E]
-
                                     shadow-xl
-
                                     border-2
-
                                     transition-all
-
                                     hover:shadow-[0_8px_30px_rgb(248,181,0,0.15)]
-
                                     hover:-translate-y-1
-
                                     ${
                                       isShort
                                         ? "border-red-500/50 hover:border-red-500"
@@ -101,80 +93,82 @@ const PaymentSummary = () => {
                                     }
 
                                 `}
-              >
-                <div className="card-body">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="card-title text-white">
-                        {member.DisplayName}
-                      </h2>
+                >
+                  <div className="card-body">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="card-title text-white">
+                          {member.DisplayName}
+                        </h2>
 
-                      <p className="text-sm text-[#A0A0A0]">
-                        {member.StatusPay}
-                      </p>
+                        <p className="text-sm text-[#A0A0A0]">
+                          {member.StatusPay}
+                        </p>
+                      </div>
+
+                      {isComplete ? (
+                        <div className="badge badge-success text-white font-medium">
+                          Paid
+                        </div>
+                      ) : isShort ? (
+                        <div className="badge badge-error text-white font-medium">
+                          Short
+                        </div>
+                      ) : (
+                        <div className="badge badge-warning text-black font-medium">
+                          Pending
+                        </div>
+                      )}
                     </div>
 
-                    {isComplete ? (
-                      <div className="badge badge-success text-white font-medium">
-                        Paid
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <p className="text-sm text-[#A0A0A0]">Amount to pay</p>
+
+                        <p className="font-bold text-white">
+                          ฿{member.AmountToPay.toFixed(2)}
+                        </p>
                       </div>
-                    ) : isShort ? (
-                      <div className="badge badge-error text-white font-medium">
-                        Short
+
+                      <div>
+                        <p className="text-sm text-[#A0A0A0]">Amount paid</p>
+
+                        <p className="font-bold text-[#F8B500]">
+                          ฿{member.AmountPaid.toFixed(2)}
+                        </p>
                       </div>
-                    ) : (
-                      <div className="badge badge-warning text-black font-medium">
-                        Pending
+                    </div>
+
+                    {member.RemainingAmount > 0 && (
+                      <div className="text-red-400 font-semibold mt-2">
+                        Short by ฿{member.RemainingAmount.toFixed(2)}
                       </div>
                     )}
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <p className="text-sm text-[#A0A0A0]">Amount to pay</p>
-
-                      <p className="font-bold text-white">
-                        ฿{member.AmountToPay.toFixed(2)}
+                    {member.LastPaymentAt && (
+                      <p className="text-sm text-[#A0A0A0] mt-2">
+                        Last payment:{" "}
+                        {new Date(member.LastPaymentAt).toLocaleString()}
                       </p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-[#A0A0A0]">Amount paid</p>
-
-                      <p className="font-bold text-[#F8B500]">
-                        ฿{member.AmountPaid.toFixed(2)}
-                      </p>
-                    </div>
+                    )}
                   </div>
-
-                  {member.RemainingAmount > 0 && (
-                    <div className="text-red-400 font-semibold mt-2">
-                      Short by ฿{member.RemainingAmount.toFixed(2)}
-                    </div>
-                  )}
-
-                  {member.LastPaymentAt && (
-                    <p className="text-sm text-[#A0A0A0] mt-2">
-                      Last payment:{" "}
-                      {new Date(member.LastPaymentAt).toLocaleString()}
-                    </p>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {selectedMember && (
-        <PaymentDetailModal
-          member={selectedMember}
-          loading={detailLoading}
-          onClose={() => setSelectedMember(null)}
-          onRefresh={loadSummary}
-        />
-      )}
-    </div>
+        {selectedMember && (
+          <PaymentDetailModal
+            member={selectedMember}
+            loading={detailLoading}
+            onClose={() => setSelectedMember(null)}
+            onRefresh={loadSummary}
+          />
+        )}
+      </div>
+      {loading && <Loading />}
+    </>
   );
 
   // return (

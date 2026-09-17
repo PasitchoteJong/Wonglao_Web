@@ -2,6 +2,7 @@ import { useState } from "react";
 import { registerLineUser } from "../services/auth.service";
 import { useAuthStore } from "../stores/authStore";
 import { Navigate } from "react-router-dom";
+import Loading from "../components/Loading.jsx";
 
 function RegisterLine() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function RegisterLine() {
   });
 
   const [previewQR, setPreviewQR] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   const params = new URLSearchParams(window.location.search);
   const registerToken = params.get("token");
@@ -27,6 +30,7 @@ function RegisterLine() {
   };
 
   const handleQRChange = (e) => {
+    
     const file = e.target.files[0];
 
     if (!file) return;
@@ -47,6 +51,7 @@ function RegisterLine() {
     }
 
     try {
+      setLoading(true);
       const data = new FormData();
 
       data.append("registerToken", registerToken);
@@ -72,33 +77,36 @@ function RegisterLine() {
       console.error("Register Error:", error);
 
       alert(error.respone?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] flex items-center justify-center p-4 font-sans text-white">
-      <div className="card bg-[#1C1C1E] border border-[#2C2C2E] w-full max-w-lg shadow-2xl rounded-3xl">
-        <div className="card-body p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-white">Register</h1>
+    <>
+      <div className="min-h-screen bg-[#000000] flex items-center justify-center p-4 font-sans text-white">
+        <div className="card bg-[#1C1C1E] border border-[#2C2C2E] w-full max-w-lg shadow-2xl rounded-3xl">
+          <div className="card-body p-8">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold text-white">Register</h1>
 
-            <p className="text-[#A0A0A0] mt-2">Complete your information</p>
-          </div>
-
-          <div className="flex flex-col items-center mb-6">
-            <div className="avatar">
-              <div className="w-24 rounded-full ring-2 ring-[#F8B500] ring-offset-2 ring-offset-[#1C1C1E]">
-                <img src="https://placehold.co/150x150" alt="LINE Profile" />
-              </div>
+              <p className="text-[#A0A0A0] mt-2">Complete your information</p>
             </div>
 
-            <p className="font-semibold mt-3 text-white">LINE User</p>
+            <div className="flex flex-col items-center mb-6">
+              <div className="avatar">
+                <div className="w-24 rounded-full ring-2 ring-[#F8B500] ring-offset-2 ring-offset-[#1C1C1E]">
+                  <img src="https://placehold.co/150x150" alt="LINE Profile" />
+                </div>
+              </div>
 
-            <p className="text-sm text-[#A0A0A0]">Your LINE account</p>
-          </div>
+              <p className="font-semibold mt-3 text-white">LINE User</p>
 
-          <form onSubmit={handleSubmit}>
-            {/* <div className="form-control mb-4">
+              <p className="text-sm text-[#A0A0A0]">Your LINE account</p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              {/* <div className="form-control mb-4">
 
                             <label className="label">
 
@@ -128,49 +136,49 @@ function RegisterLine() {
 
                         </div> */}
 
-            <div className="form-control mb-4">
-              <label className="label">
-                <span className="label-text font-semibold text-white">
-                  Email
-                </span>
-              </label>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text font-semibold text-white">
+                    Email
+                  </span>
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="example@mail.com"
+                  className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl placeholder-gray-500"
+                />
+              </div>
+
+              <div className="form-control mb-1">
+                <label className="label">
+                  <span className="label-text font-semibold text-white">
+                    Birthday
+                  </span>
+                </label>
+              </div>
 
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="date"
+                name="birthDay"
+                value={formData.birthDay}
                 onChange={handleChange}
-                placeholder="example@mail.com"
-                className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl placeholder-gray-500"
+                className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl mb-4"
+                required
               />
-            </div>
 
-            <div className="form-control mb-1">
-              <label className="label">
-                <span className="label-text font-semibold text-white">
-                  Birthday
-                </span>
-              </label>
-            </div>
+              <div className="divider text-[#A0A0A0] before:bg-[#2C2C2E] after:bg-[#2C2C2E]">
+                Payment Information
+              </div>
 
-            <input
-              type="date"
-              name="birthDay"
-              value={formData.birthDay}
-              onChange={handleChange}
-              className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl mb-4"
-              required
-            />
+              <p className="text-sm text-[#A0A0A0] mb-4">
+                Please Provide at least one payment method.
+              </p>
 
-            <div className="divider text-[#A0A0A0] before:bg-[#2C2C2E] after:bg-[#2C2C2E]">
-              Payment Information
-            </div>
-
-            <p className="text-sm text-[#A0A0A0] mb-4">
-              Please Provide at least one payment method.
-            </p>
-
-            {/* <div className="form-control mb-4">
+              {/* <div className="form-control mb-4">
 
                             <label className="label">
 
@@ -198,66 +206,72 @@ function RegisterLine() {
 
                         </div> */}
 
-            <div className="form-control mb-4">
-              <label className="label">
-                <span className="label-text font-semibold text-white">
-                  PromptPay
-                </span>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text font-semibold text-white">
+                    PromptPay
+                  </span>
 
-                <span className="label-text-alt text-[#A0A0A0]">Optional</span>
-              </label>
+                  <span className="label-text-alt text-[#A0A0A0]">
+                    Optional
+                  </span>
+                </label>
 
-              <input
-                type="text"
-                name="promtpay"
-                value={formData.promtpay}
-                onChange={handleChange}
-                placeholder="Your Promtpay"
-                className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl placeholder-gray-500"
-              />
-            </div>
-
-            <div className="form-control mb-6">
-              <label className="label">
-                <span className="label-text font-semibold text-white">
-                  QR Payment
-                </span>
-
-                <span className="label-text-alt text-[#A0A0A0]">Optional</span>
-              </label>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleQRChange}
-                className="file-input file-input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl"
-              />
-            </div>
-
-            {previewQR && (
-              <div className="flex flex-col items-center mb-6">
-                <p className="font-semibold mb-2 text-white">QR Preview</p>
-
-                <div className="border border-[#2C2C2E] bg-white p-2 rounded-2xl">
-                  <img
-                    src={previewQR}
-                    alt="QR Payment Preview"
-                    className="w-48 h-48 object-contain rounded-lg"
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="promtpay"
+                  value={formData.promtpay}
+                  onChange={handleChange}
+                  placeholder="Your Promtpay"
+                  className="input input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl placeholder-gray-500"
+                />
               </div>
-            )}
 
-            <button
-              type="submit"
-              className="btn w-full border-none text-[#121212] font-bold bg-[#F8B500] hover:bg-[#E0A300] rounded-xl"
-            >
-              Register
-            </button>
-          </form>
+              <div className="form-control mb-6">
+                <label className="label">
+                  <span className="label-text font-semibold text-white">
+                    QR Payment
+                  </span>
+
+                  <span className="label-text-alt text-[#A0A0A0]">
+                    Optional
+                  </span>
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleQRChange}
+                  className="file-input file-input-bordered w-full bg-[#2C2C2E] border-transparent text-white focus:border-[#F8B500] rounded-xl"
+                />
+              </div>
+
+              {previewQR && (
+                <div className="flex flex-col items-center mb-6">
+                  <p className="font-semibold mb-2 text-white">QR Preview</p>
+
+                  <div className="border border-[#2C2C2E] bg-white p-2 rounded-2xl">
+                    <img
+                      src={previewQR}
+                      alt="QR Payment Preview"
+                      className="w-48 h-48 object-contain rounded-lg"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn w-full border-none text-[#121212] font-bold bg-[#F8B500] hover:bg-[#E0A300] rounded-xl"
+              >
+                Register
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+      {loading && <Loading />}
+    </>
   );
 
   // return (

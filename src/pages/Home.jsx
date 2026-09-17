@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
+
 export default function Home() {
   const navigate = useNavigate();
   // const token = localStorage.getItem("accessToken");

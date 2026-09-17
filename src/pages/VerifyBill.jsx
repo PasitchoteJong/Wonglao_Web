@@ -5,6 +5,7 @@ import {
   updateBillItems,
   verifyBill,
 } from "../services/bill.service";
+import Loading from "../components/Loading.jsx";
 
 export default function VerifyBill() {
   const navigate = useNavigate();
@@ -21,10 +22,14 @@ export default function VerifyBill() {
   const [items, setItems] = useState([]);
   const [previewReceipt, setPreviewReceipt] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     // Fetch bill details from backend including items
     const fetchBill = async () => {
       try {
+        setLoading(true);
+
         const response = await getBillById(billId);
         const bill = response.bill;
         // const response = await axios.get(`http://localhost:8000/api/bills/${billId}`);
@@ -38,9 +43,11 @@ export default function VerifyBill() {
 
         // Set items array for editing
         setItems(bill.BillItem || []);
-        setPreviewReceipt(`http://localhost:8808${bill.ReceiptImage}`);
+        setPreviewReceipt(bill.ReceiptImage);
       } catch (error) {
         console.error("Failed to fetch bill details:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -48,6 +55,10 @@ export default function VerifyBill() {
       fetchBill();
     }
   }, [billId]);
+
+  if (loading) {
+    return <Loading message="Loading..." />;
+  }
 
   // Handle general form field changes
   const handleChange = (e) => {
@@ -224,7 +235,19 @@ export default function VerifyBill() {
               Edit Scanned Items
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+              {/* Header */}
+              <div className="flex gap-2 items-center px-3 text-xs text-[#A0A0A0]">
+                <div className="flex-grow">Item Name</div>
+
+                <div className="w-20 text-center">Price</div>
+
+                <div className="w-16 text-center">Qty</div>
+
+                <div className="w-8"></div>
+              </div>
+
+              {/* Items */}
               {items.map((item, index) => (
                 <div
                   key={item.Id || index}
@@ -267,7 +290,7 @@ export default function VerifyBill() {
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(index)}
-                    className="text-red-500 hover:text-red-400 font-bold px-2 py-1 text-sm transition-colors"
+                    className="text-red-500 hover:text-red-400 font-bold px-2 py-1 text-sm transition-colors w-8"
                     title="Remove item"
                   >
                     ✕
