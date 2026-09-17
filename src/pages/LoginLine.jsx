@@ -22,6 +22,7 @@ const LoginLine = () => {
   };
   return (
     <div className="min-h-screen bg-[#000000] flex items-center justify-center p-4">
+      <p className="text-white">TEST PRODUCTION LOGIN</p>
       <button
         onClick={handleLineLogin}
         className="btn text-lg border-none text-[#121212] rounded-2xl bg-[#F8B500] hover:bg-[#E0A300] px-10 py-3 shadow-md font-bold"
