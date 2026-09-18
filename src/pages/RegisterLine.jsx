@@ -19,8 +19,23 @@ function RegisterLine() {
   const [previewQR, setPreviewQR] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // 1. ดึง Query Params ปกติ
   const params = new URLSearchParams(window.location.search);
-  const registerToken = params.get("token");
+  let registerToken = params.get("token");
+
+  // 2. ถ้าดึงปกติไม่เจอ ให้เช็คใน liff.state (กรณีวิ่งผ่าน LINE LIFF)
+  if (!registerToken) {
+    const liffState = params.get("liff.state");
+    if (liffState) {
+      // decode ค่า liff.state เพื่อดึง query parameter ที่ถูกซ่อนไว้
+      const decodedState = decodeURIComponent(liffState);
+      const stateParams = new URLSearchParams(decodedState);
+      registerToken = stateParams.get("token");
+    }
+  }
+
+  // 3. ตรวจสอบ registerToken ตามปกติ
+  console.log("Real Register Token:", registerToken);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +60,9 @@ function RegisterLine() {
 
     // 3. ป้องกันการส่งค่า 'null' string ไปที่ Backend
     if (!registerToken || registerToken === "null") {
-      alert("ไม่พบ Token หรือเซสชันหมดอายุ กรุณาเข้าสู่ระบบด้วย LINE ใหม่อีกครั้ง");
+      alert(
+        "ไม่พบ Token หรือเซสชันหมดอายุ กรุณาเข้าสู่ระบบด้วย LINE ใหม่อีกครั้ง",
+      );
       navigate("/login"); // ส่งกลับไปหน้า login
       return;
     }
