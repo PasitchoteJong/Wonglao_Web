@@ -13,10 +13,10 @@ const LoginLine = () => {
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&state=123456` +
       `&scope=profile%20openid`;
-    console.log("Line URL:", lineLoginUrl);
+    // console.log("Line URL:", lineLoginUrl);
 
-    console.log("API URL:", import.meta.env.VITE_API_URL);
-    console.log("Redirect URI:", redirectUri);
+    // console.log("API URL:", import.meta.env.VITE_API_URL);
+    // console.log("Redirect URI:", redirectUri);
 
     window.location.href = lineLoginUrl;
   };
