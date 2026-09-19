@@ -67,7 +67,7 @@ function RegisterLine() {
       alert(
         "ไม่พบ Token หรือเซสชันหมดอายุ กรุณาเข้าสู่ระบบด้วย LINE ใหม่อีกครั้ง",
       );
-      navigate("/login"); // ส่งกลับไปหน้า login
+      navigate("/loginline"); // ส่งกลับไปหน้า login
       return;
     }
 

@@ -18,32 +18,39 @@ import JoinBill from "../pages/JoinBill.jsx";
 import EqualSplit from "../pages/EqualSplit.jsx";
 import Payment from "../pages/Payment.jsx";
 import PaymentSummary from "../pages/PaymentSummary.jsx";
+import PaymentSummaryDetail from "../pages/PaymentSummaryDetail.jsx";
 import SplitMethod from "../pages/SplitMethod.jsx";
 import VerifyPayment from "../pages/VerifyPayment.jsx";
 import FoodSplittingWaiting from "../pages/FoodSplittingWaitting.jsx";
 import Roulette from "../pages/Roulette.jsx";
+import ScanJoin from "../pages/SacnJoin.jsx";
 
 const router = createBrowserRouter([
   // { path: "/Register",Component:Register }
   { path: "/loginline", element: <LoginLine /> },
   { path: "/register-line", element: <RegisterLine /> },
   { path: "/login-success", element: <LoginSuccess /> },
-  { path: "/", element: <Home /> },
   {
     element: <ProtectedRoute />,
     children: [
+      { path: "/", element: <Home /> },
+      { path: "scan-join", element: <ScanJoin /> },
       { path: "/create-bill", element: <CreateBill /> },
       { path: "/verify-bill/:billId", element: <VerifyBill /> },
       { path: "/join-bill/:billId", element: <JoinBill /> },
       { path: "/split-method/:billId", element: <SplitMethod /> },
-      { path: "/food-splitting/:billId/waiting",element: <FoodSplittingWaiting />},
+      {
+        path: "/food-splitting/:billId/waiting",
+        element: <FoodSplittingWaiting />,
+      },
       { path: "/food-splitting/:billId/summary", element: <BillSummary /> },
       { path: "/food-splitting/:billId", element: <FoodSplitting /> },
       { path: "/equal-split/:billId", element: <EqualSplit /> },
       { path: "/roulette/:billId", element: <Roulette /> },
       { path: "/payment/:billId", element: <Payment /> },
       { path: "/verify-payment", element: <VerifyPayment /> },
-      { path: "/payment-summary/:billId", element: <PaymentSummary /> },
+      { path: "/payment-summary/", element: <PaymentSummary /> },
+      { path: "/payment-summary/:billId", element: <PaymentSummaryDetail /> },
     ],
   },
 
