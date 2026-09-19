@@ -1,69 +1,54 @@
 import { useEffect, useState } from "react";
 import liff from "@line/liff";
 
+import AppRouter from "./routes/AppRouter";
+import Toast from "./components/toast/Toast.jsx";
+
 function App() {
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [liffReady, setLiffReady] = useState(false);
+  const [liffReady, setLiffReady] = useState(false);
+  const [liffError, setLiffError] = useState(null);
 
-    useEffect(() => {
-        const startApp = async () => {
-            try {
-                // 1) เริ่มต้น LIFF
-                await liff.init({
-                    liffId: import.meta.env.VITE_LIFF_ID,
-                });
+  useEffect(() => {
+    const startApp = async () => {
+      try {
+        console.log("Starting LIFF...");
 
-                setLiffReady(true);
+        await liff.init({
+          liffId: import.meta.env.VITE_LIFF_ID,
+        });
 
-                // 2) ทดสอบเชื่อมต่อ Backend
-                const apiUrl =
-                    import.meta.env.VITE_API_URL || "http://localhost:8000";
+        console.log("LIFF Ready");
+        console.log("Current URL:", window.location.href);
 
-                const response = await fetch(`${apiUrl}/`);
+        setLiffReady(true);
+      } catch (error) {
+        console.error("LIFF init error:", error);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        setLiffError(error);
 
-                const data = await response.json();
-                setMessage(data.message);
-            } catch (error) {
-                console.error("App init error:", error);
-                setMessage("ไม่สามารถเริ่ม LIFF หรือเชื่อมต่อ Backend ได้");
-            } finally {
-                setLoading(false);
-            }
-        };
+        // ถ้าต้องการให้เว็บเปิดนอก LINE ได้ด้วย
+        // สามารถปล่อย Router ทำงานต่อได้
+        setLiffReady(true);
+      }
+    };
 
-        startApp();
-    }, []);
+    startApp();
+  }, []);
 
+  if (!liffReady) {
     return (
-        <div className="min-h-screen bg-base-200 flex items-center justify-center">
-            <div className="card bg-base-100 w-96 shadow-xl">
-                <div className="card-body">
-                    <h2 className="card-title">WongLao</h2>
-
-                    {loading ? (
-                        <span className="loading loading-spinner loading-md"></span>
-                    ) : (
-                        <>
-                            <p>{message}</p>
-
-                            <p className="text-sm opacity-70">
-                                LIFF: {liffReady ? "Ready" : "Not ready"}
-                            </p>
-                        </>
-                    )}
-
-                    <button className="btn btn-primary">
-                        Test Backend
-                    </button>
-                </div>
-            </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
     );
+  }
+
+  return (
+    <>
+      <Toast />
+      <AppRouter />
+    </>
+  );
 }
 
-    export default App;
+export default App;

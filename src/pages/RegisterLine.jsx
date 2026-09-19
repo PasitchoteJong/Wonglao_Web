@@ -21,16 +21,20 @@ function RegisterLine() {
 
   // 1. ดึง Query Params ปกติ
   const params = new URLSearchParams(window.location.search);
+
   let registerToken = params.get("token");
 
-  // 2. ถ้าดึงปกติไม่เจอ ให้เช็คใน liff.state (กรณีวิ่งผ่าน LINE LIFF)
   if (!registerToken) {
     const liffState = params.get("liff.state");
+
     if (liffState) {
-      // decode ค่า liff.state เพื่อดึง query parameter ที่ถูกซ่อนไว้
-      const decodedState = decodeURIComponent(liffState);
-      const stateParams = new URLSearchParams(decodedState);
-      registerToken = stateParams.get("token");
+      try {
+        const stateUrl = new URL(liffState, window.location.origin);
+
+        registerToken = stateUrl.searchParams.get("token");
+      } catch (error) {
+        console.error("Invalid liff.state");
+      }
     }
   }
 
