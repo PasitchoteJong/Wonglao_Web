@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import ScanIcon from "../components/icons/ScanIcon.jsx";
 import PaymentSummaryIcon from "../components/icons/PaymentSummaryIcon.jsx";
+import DashboardIcon from "../components/icons/DashboardIcon.jsx";
+import ProfileIcon from "../components/icons/ProfileIcon.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -56,10 +58,13 @@ export default function Home() {
           {/* กดพื้นที่ข้างนอกเพื่อปิด */}
           <button
             type="button"
-            aria-label="Close profile menu"
-            onClick={() => setProfileOpen(false)}
-            className="fixed inset-0 z-40 cursor-default"
-          />
+            onClick={() => {
+              setProfileOpen(false);
+              navigate("/profile");
+            }}
+          >
+            Profile
+          </button>
 
           <div
             className="
@@ -250,11 +255,8 @@ export default function Home() {
           ========================== */}
           <NavButton
             label="Dashboard"
-            icon="▦"
-            onClick={() => {
-              // ยังไม่มี Dashboard
-              navigate("/");
-            }}
+            icon={<DashboardIcon className="w-7 h-7" />}
+            onClick={() => navigate("/dashboard")}
           />
 
           {/* =========================
@@ -262,11 +264,8 @@ export default function Home() {
           ========================== */}
           <NavButton
             label="Profile"
-            icon="●"
-            active={profileOpen}
-            onClick={() => {
-              setProfileOpen((prev) => !prev);
-            }}
+            icon={<ProfileIcon className="w-7 h-7" />}
+            onClick={() => navigate("/profile")}
           />
         </div>
       </div>

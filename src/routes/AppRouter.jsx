@@ -23,7 +23,9 @@ import SplitMethod from "../pages/SplitMethod.jsx";
 import VerifyPayment from "../pages/VerifyPayment.jsx";
 import FoodSplittingWaiting from "../pages/FoodSplittingWaitting.jsx";
 import Roulette from "../pages/Roulette.jsx";
-import ScanJoin from "../pages/SacnJoin.jsx";
+import ScanJoin from "../pages/ScanJoin.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
+import Profile from "../pages/Profile.jsx";
 
 const router = createBrowserRouter([
   // { path: "/Register",Component:Register }
@@ -34,6 +36,8 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/dashboard", element: <Dashboard /> },
+      { path: "/profile", element: <Profile /> },
       { path: "scan-join", element: <ScanJoin /> },
       { path: "/create-bill", element: <CreateBill /> },
       { path: "/verify-bill/:billId", element: <VerifyBill /> },

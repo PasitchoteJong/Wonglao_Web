@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { toast } from "../components/toast/toast";
+import { toast } from "../components/toast/toast.js";
 import ScanIcon from "../components/icons/ScanIcon.jsx";
 
 
