@@ -2,124 +2,163 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
-    getFoodSelectionStatus,
-    calculateProportionalSplit
+  getFoodSelectionStatus,
+  calculateProportionalSplit,
 } from "../services/foodSplitting.service";
+import Loading from "../components/Loading.jsx";
 
 const FoodSplittingWaiting = () => {
-    const { billId } = useParams();
-    const navigate = useNavigate();
+  const { billId } = useParams();
+  const navigate = useNavigate();
 
-    const [status, setStatus] =
-        useState(null);
+  const [status, setStatus] = useState(null);
 
-    useEffect(() => {
-        let interval;
+  const [loading, setLoading] = useState(false);
 
-        const fetchStatus = async () => {
-            try {
-                const result = await getFoodSelectionStatus(billId);
+  useEffect(() => {
+    let interval;
 
-                const data = result.data;
+    const fetchStatus = async () => {
+      try {
+        setLoading(true);
 
-                setStatus(data);
+        const result = await getFoodSelectionStatus(billId);
 
-                if (data.completed) {
-                    clearInterval(interval);
+        const data = result.data;
 
-                    await calculateProportionalSplit(billId);
+        setStatus(data);
 
-                    navigate(`/payment/${billId}`);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
+        if (data.completed) {
+          clearInterval(interval);
 
-        fetchStatus();
+          await calculateProportionalSplit(billId);
 
-        interval = setInterval(fetchStatus, 3000);
+          navigate(`/payment/${billId}`);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        return () => clearInterval(interval);
-    }, [billId, navigate]);
+    fetchStatus();
 
-    if (!status) {
-        return (
-            <div className="flex justify-center p-10">
-                Loading...
-            </div>
-        );
-    }
+    interval = setInterval(fetchStatus, 3000);
 
-    return (
-        <div className="max-w-2xl mx-auto p-6">
+    return () => clearInterval(interval);
+  }, [billId, navigate]);
 
-            <div className="text-center">
+  if (!status) {
+    return <div className="flex justify-center p-10">Loading...</div>;
+  }
 
-                <h1 className="text-2xl font-bold">
-                    Food Selection
-                </h1>
+  return (
+    <>
+      <div className="min-h-screen bg-[#000000] font-sans text-white">
+        <div className="max-w-2xl mx-auto p-6 pt-10">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white">Food Selection</h1>
 
-                <p className="mt-2 text-gray-500">
-                    Waiting for everyone
-                    to select their food
-                </p>
+            <p className="mt-2 text-[#A0A0A0]">
+              Waiting for everyone to select their food
+            </p>
 
-                <div className="mt-8">
+            <div className="mt-8">
+              <p className="text-4xl font-bold text-[#F8B500]">
+                {status.submittedMembers}
 
-                    <p className="text-4xl font-bold">
-                        {status.submittedMembers}
-                        {" / "}
-                        {status.totalMembers}
-                    </p>
+                {" / "}
 
-                    <p className="mt-2">
-                        members submitted
-                    </p>
+                {status.totalMembers}
+              </p>
 
-                </div>
-
-                <progress
-                    className="progress progress-primary w-full mt-6"
-                    value={status.progress}
-                    max="100"
-                />
-
-                <p className="mt-2 font-semibold">
-                    {status.progress}%
-                </p>
-
+              <p className="mt-2 text-[#A0A0A0]">members submitted</p>
             </div>
 
-            <div className="mt-8 space-y-3">
+            <progress
+              className="progress w-full mt-6 bg-[#2C2C2E] [&::-webkit-progress-value]:bg-[#F8B500] [&::-moz-progress-bar]:bg-[#F8B500]"
+              value={status.progress}
+              max="100"
+            />
 
-                {status.members.map(
-                    (member) => (
-                        <div
-                            key={member.id}
-                            className="flex justify-between items-center border rounded-lg p-4"
-                        >
-                            <span>
-                                {member.displayName}
-                            </span>
+            <p className="mt-2 font-semibold text-[#F8B500]">
+              {status.progress}%
+            </p>
+          </div>
 
-                            {member.submitted ? (
-                                <span className="text-success">
-                                    ✓ Submitted
-                                </span>
-                            ) : (
-                                <span className="text-warning">
-                                    Waiting...
-                                </span>
-                            )}
-                        </div>
-                    )
+          <div className="mt-8 space-y-3">
+            {status.members.map((member) => (
+              <div
+                key={member.id}
+                className="flex justify-between items-center bg-[#1C1C1E] border-none rounded-xl p-4"
+              >
+                <span className="font-semibold text-white">
+                  {member.displayName}
+                </span>
+
+                {member.submitted ? (
+                  <span className="font-medium text-[#06C755]">
+                    ✓ Submitted
+                  </span>
+                ) : (
+                  <span className="font-medium text-[#A0A0A0]">Waiting...</span>
                 )}
-
-            </div>
-
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      </div>
+      {loading && <Loading />}
+    </>
+  );
+
+  //   return (
+  //     <div className="max-w-2xl mx-auto p-6">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold">Food Selection</h1>
+
+  //         <p className="mt-2 text-gray-500">
+  //           Waiting for everyone to select their food
+  //         </p>
+
+  //         <div className="mt-8">
+  //           <p className="text-4xl font-bold">
+  //             {status.submittedMembers}
+  //             {" / "}
+  //             {status.totalMembers}
+  //           </p>
+
+  //           <p className="mt-2">members submitted</p>
+  //         </div>
+
+  //         <progress
+  //           className="progress progress-primary w-full mt-6"
+  //           value={status.progress}
+  //           max="100"
+  //         />
+
+  //         <p className="mt-2 font-semibold">{status.progress}%</p>
+  //       </div>
+
+  //       <div className="mt-8 space-y-3">
+  //         {status.members.map((member) => (
+  //           <div
+  //             key={member.id}
+  //             className="flex justify-between items-center border rounded-lg p-4"
+  //           >
+  //             <span>{member.displayName}</span>
+
+  //             {member.submitted ? (
+  //               <span className="text-success">✓ Submitted</span>
+  //             ) : (
+  //               <span className="text-warning">Waiting...</span>
+  //             )}
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
 };
 
 export default FoodSplittingWaiting;

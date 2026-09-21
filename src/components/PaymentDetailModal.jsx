@@ -111,7 +111,7 @@ const PaymentDetailModal = ({
                                 </div>
 
                                 <img
-                                    src={`http://localhost:8808${slip.ProofImage}`}
+                                    src={slip.ProofImage}
                                     alt="Payment slip"
                                     className="w-full max-h-[500px] object-contain rounded-lg mt-4"
                                 />

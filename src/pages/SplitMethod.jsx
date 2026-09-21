@@ -1,95 +1,125 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectSplitMethod } from "../services/split.service";
+import Loading from "../components/Loading.jsx";
 
 export default function SplitMethod() {
-    const { billId } = useParams();
-    const navigate = useNavigate();
+  const { billId } = useParams();
+  const navigate = useNavigate();
 
-    const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const methods = [
+    {
+      id: "EQUAL",
+      title: "Equal Split",
+      description: "หารเท่ากัน จบ ๆ ไม่มีใครหนี",
+      path: `/equal-split/${billId}`,
+    },
+    {
+      id: "PROPORTIONAL",
+      title: "Food Splitting",
+      description: "กินอะไร จ่ายอันนั้น กินเยอะก็อย่าทำเป็นลืม",
+      path: `/food-splitting/${billId}`,
+    },
+    {
+      id: "ROULETTE",
+      title: "Roulette",
+      description: "วงล้อเลือกสุ่มผู้โชคดี",
+      path: `/roulette/${billId}`,
+    },
+  ];
 
-    const methods = [
-        {
-            id: "EQUAL",
-            title: "Equal Split",
-            description: "หารเท่ากัน จบ ๆ ไม่มีใครหนี",
-            path: `/equal-split/${billId}`
-        },
-        {
-            id: "PROPORTIONAL",
-            title: "Food Splitting",
-            description: "กินอะไร จ่ายอันนั้น กินเยอะก็อย่าทำเป็นลืม",
-            path: `/food-splitting/${billId}`
-        },
-        {
-            id: "ROULETTE",
-            title: "Roulette",
-            description: "วงล้อเลือกสุ่มผู้โชคดี",
-            path: `/roulette/${billId}`
-        }
-    ];
+  const handleSelect = async (method) => {
+    try {
+      setLoading(true);
+      setSubmitting(true);
 
-    const handleSelect = async (method) => {
-        try {
-            setSubmitting(true);
+      await selectSplitMethod(billId, method.id);
 
-            await selectSplitMethod(
-                billId,
-                method.id
-            );
+      navigate(method.path);
+    } catch (error) {
+      console.error("Failed to select split method:", error);
 
-            navigate(method.path);
+      alert("Failed to select split method");
+    } finally {
+      setSubmitting(false);
+      setLoading(false);
+    }
+  };
 
-        } catch (error) {
-            console.error(
-                "Failed to select split method:",
-                error
-            );
+  return (
+    <>
+      <div className="min-h-screen p-8 bg-[#000000]">
+        <h1 className="text-3xl font-bold text-center mb-8 text-white">
+          Select Split Method
+        </h1>
 
-            alert("Failed to select split method");
-        } finally {
-            setSubmitting(false);
-        }
-    };
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {methods.map((method) => (
+            <button
+              key={method.id}
+              disabled={submitting}
+              onClick={() => handleSelect(method)}
+              className="card bg-[#1C1C1E] border border-transparent shadow-xl hover:shadow-[0_8px_30px_rgb(248,181,0,0.15)] hover:-translate-y-1 hover:border-[#F8B500] transition-all text-left"
+            >
+              <div className="card-body">
+                <h2 className="card-title text-white">{method.title}</h2>
 
-    return (
-        <div className="min-h-screen p-8">
+                <p className="text-[#A0A0A0]">{method.description}</p>
 
-            <h1 className="text-3xl font-bold text-center mb-8">
-                Select Split Method
-            </h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-
-                {methods.map((method) => (
-                    <button
-                        key={method.id}
-                        disabled={submitting}
-                        onClick={() => handleSelect(method)}
-                        className="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all text-left"
-                    >
-                        <div className="card-body">
-
-                            <h2 className="card-title">
-                                {method.title}
-                            </h2>
-
-                            <p>
-                                {method.description}
-                            </p>
-
-                            <div className="card-actions justify-end mt-4">
-                                <span className="btn btn-primary">
-                                    Select
-                                </span>
-                            </div>
-
-                        </div>
-                    </button>
-                ))}
-
-            </div>
-
+                <div className="card-actions justify-end mt-4">
+                  <span className="btn border-none text-[#121212] bg-[#F8B500] hover:bg-[#E0A300] font-bold">
+                    Select
+                  </span>
+                </div>
+              </div>
+            </button>
+          ))}
         </div>
-    );
+      </div>
+      {loading && <Loading />}
+    </>
+  );
+
+  // return (
+  //     <div className="min-h-screen p-8">
+
+  //         <h1 className="text-3xl font-bold text-center mb-8">
+  //             Select Split Method
+  //         </h1>
+
+  //         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+
+  //             {methods.map((method) => (
+  //                 <button
+  //                     key={method.id}
+  //                     disabled={submitting}
+  //                     onClick={() => handleSelect(method)}
+  //                     className="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all text-left"
+  //                 >
+  //                     <div className="card-body">
+
+  //                         <h2 className="card-title">
+  //                             {method.title}
+  //                         </h2>
+
+  //                         <p>
+  //                             {method.description}
+  //                         </p>
+
+  //                         <div className="card-actions justify-end mt-4">
+  //                             <span className="btn btn-primary">
+  //                                 Select
+  //                             </span>
+  //                         </div>
+
+  //                     </div>
+  //                 </button>
+  //             ))}
+
+  //         </div>
+
+  //     </div>
+  // );
 }

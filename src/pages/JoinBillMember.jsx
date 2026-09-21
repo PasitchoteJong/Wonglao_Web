@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { getJoinBill } from "../services/joinBill.service";
+import { getJoinBill, joinBillMember } from "../services/joinBill.service";
 
 export default function JoinBillMember() {
     const { billId } = useParams();
@@ -15,10 +15,10 @@ export default function JoinBillMember() {
     useEffect(() => {
         const joinBillAutomatically = async () => {
             try {
-                const token = localStorage.getItem("token") || sessionStorage.getItem("token"); // หรือดึงจาก Auth Store ตามโปรเจกต์ของคุณ
-                await axios.post(`http://localhost:8000/api/bills/${billId}/join`, {}, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const token = localStorage.getItem("token") || sessionStorage.getItem("token"); 
+
+                const resp = await getJoinBill(billId);
+
             } catch (error) {
                 console.error("Auto join error (might already joined):", error);
             } finally {

@@ -1,43 +1,54 @@
 import { useEffect, useState } from "react";
+import liff from "@line/liff";
+
+import AppRouter from "./routes/AppRouter";
+import Toast from "./components/toast/Toast.jsx";
 
 function App() {
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(true);
+  const [liffReady, setLiffReady] = useState(false);
+  const [liffError, setLiffError] = useState(null);
 
-    useEffect(() => {
-        fetch("http://localhost:8000/")
-            .then((response) => response.json())
-            .then((data) => {
-                setMessage(data.message);
-            })
-            .catch((error) => {
-                console.error("Backend Error:", error);
-                setMessage("ไม่สามารถเชื่อมต่อ Backend ได้");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);
+  useEffect(() => {
+    const startApp = async () => {
+      try {
+        console.log("Starting LIFF...");
 
+        await liff.init({
+          liffId: import.meta.env.VITE_LIFF_ID,
+        });
+
+        console.log("LIFF Ready");
+        console.log("Current URL:", window.location.href);
+
+        setLiffReady(true);
+      } catch (error) {
+        console.error("LIFF init error:", error);
+
+        setLiffError(error);
+
+        // ถ้าต้องการให้เว็บเปิดนอก LINE ได้ด้วย
+        // สามารถปล่อย Router ทำงานต่อได้
+        setLiffReady(true);
+      }
+    };
+
+    startApp();
+  }, []);
+
+  if (!liffReady) {
     return (
-        <div className="min-h-screen bg-base-200 flex items-center justify-center">
-            <div className="card bg-base-100 w-96 shadow-xl">
-                <div className="card-body">
-                    <h2 className="card-title">WongLao</h2>
-
-                    {loading ? (
-                        <span className="loading loading-spinner loading-md"></span>
-                    ) : (
-                        <p>{message}</p>
-                    )}
-
-                    <button className="btn btn-primary">
-                        Test Backend
-                    </button>
-                </div>
-            </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
     );
+  }
+
+  return (
+    <>
+      <Toast />
+      <AppRouter />
+    </>
+  );
 }
 
 export default App;
