@@ -17,7 +17,7 @@ export default function JoinBillMember() {
             try {
                 const token = localStorage.getItem("token") || sessionStorage.getItem("token"); 
 
-                const resp = await getJoinBill(billId);
+                const resp = await joinBillMember(billId);
 
             } catch (error) {
                 console.error("Auto join error (might already joined):", error);
