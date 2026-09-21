@@ -14,7 +14,7 @@ export default function JoinBill() {
     const [showSplitModal, setShowSplitModal] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    const joinUrl = `${window.location.origin}/join-bill/${billId}`;
+    const joinUrl = `${window.location.origin}/join-member/${billId}`;
 
     const fetchBill = async () => {
         try {
