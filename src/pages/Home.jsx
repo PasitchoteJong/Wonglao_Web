@@ -20,28 +20,12 @@ export default function Home() {
   return (
     <div className="relative min-h-screen bg-[#000000] text-white overflow-hidden font-sans">
       {/* =========================
-          HERO IMAGE
+          HERO SECTION (Pure Black)
       ========================== */}
-      <div className="relative h-[75vh] overflow-hidden group">
-        <img
-          src="/images/home-hero.jpg"
-          alt="WongLao"
-          className="
-            w-full
-            h-full
-            object-cover
-            transition-transform
-            duration-700
-            ease-out
-            group-hover:scale-105
-          "
-        />
-
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-[#000000]" />
+      <div className="relative h-[75vh] bg-[#000000] overflow-hidden flex flex-col justify-end p-8 pb-10">
 
         {/* Hero Content */}
-        <div className="absolute bottom-10 left-6 right-6 max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto w-full">
           <h1 className="text-4xl font-bold text-white">Let's go Dutch ☕</h1>
 
           <p className="text-[#A0A0A0] mt-2 font-medium">
@@ -58,13 +42,9 @@ export default function Home() {
           {/* กดพื้นที่ข้างนอกเพื่อปิด */}
           <button
             type="button"
-            onClick={() => {
-              setProfileOpen(false);
-              navigate("/profile");
-            }}
-          >
-            Profile
-          </button>
+            className="fixed inset-0 z-40 bg-transparent w-full h-full cursor-default"
+            onClick={() => setProfileOpen(false)}
+          />
 
           <div
             className="
@@ -88,9 +68,7 @@ export default function Home() {
               type="button"
               onClick={() => {
                 setProfileOpen(false);
-
-                // ยังไม่มีหน้า Profile
-                navigate("/");
+                navigate("/profile");
               }}
               className="
                 w-full
@@ -265,7 +243,7 @@ export default function Home() {
           <NavButton
             label="Profile"
             icon={<ProfileIcon className="w-7 h-7" />}
-            onClick={() => navigate("/profile")}
+            onClick={() => setProfileOpen((prev) => !prev)}
           />
         </div>
       </div>

@@ -23,6 +23,7 @@ import SplitMethod from "../pages/SplitMethod.jsx";
 import VerifyPayment from "../pages/VerifyPayment.jsx";
 import FoodSplittingWaiting from "../pages/FoodSplittingWaitting.jsx";
 import Roulette from "../pages/Roulette.jsx";
+import JoinBillMember from "../pages/JoinBillMember.jsx";
 import ScanJoin from "../pages/ScanJoin.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import Profile from "../pages/Profile.jsx";
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: "/create-bill", element: <CreateBill /> },
       { path: "/verify-bill/:billId", element: <VerifyBill /> },
       { path: "/join-bill/:billId", element: <JoinBill /> },
+      { path: "/join-member/:billId", element: <JoinBillMember />},
       { path: "/split-method/:billId", element: <SplitMethod /> },
       {
         path: "/food-splitting/:billId/waiting",
